@@ -8,7 +8,7 @@ namespace Buttr.Core {
 
         private TConcrete m_Instance;
         
-        internal StaticSingleton(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base() {
+        internal StaticSingleton(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
             ApplicationRegistry.Register<TConcrete>(this);
@@ -70,7 +70,7 @@ namespace Buttr.Core {
         
         private TConcrete m_Instance;
 
-        internal StaticSingleton(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base() {
+        internal StaticSingleton(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
             ApplicationRegistry.Register<TAbstract>(this);

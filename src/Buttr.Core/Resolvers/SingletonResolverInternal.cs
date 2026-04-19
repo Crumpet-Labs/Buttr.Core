@@ -10,7 +10,7 @@ namespace Buttr.Core {
 
         private TConcrete m_Instance;
 
-        public SingletonResolverInternal(Dictionary<Type, IObjectResolver> registry, Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) {
+        public SingletonResolverInternal(Dictionary<Type, IObjectResolver> registry, Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Registry = registry;
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;

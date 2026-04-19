@@ -6,7 +6,7 @@ namespace Buttr.Core {
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
         
-        internal StaticTransient(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base() {
+        internal StaticTransient(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
             ApplicationRegistry.Register<TConcrete>(this);
@@ -52,7 +52,7 @@ namespace Buttr.Core {
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
 
-        internal StaticTransient(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base() {
+        internal StaticTransient(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
             ApplicationRegistry.Register<TAbstract>(this);

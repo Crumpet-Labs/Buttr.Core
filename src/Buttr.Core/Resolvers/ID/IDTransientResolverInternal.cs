@@ -6,7 +6,7 @@ namespace Buttr.Core {
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
 
-        public IDTransientResolverInternal(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) {
+        public IDTransientResolverInternal(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
         }

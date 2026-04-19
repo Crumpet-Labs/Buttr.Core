@@ -6,13 +6,19 @@ namespace Buttr.Core {
         protected readonly Type[] requirements;
         protected readonly Func<object[], TConcrete> factory;
 
-        protected ObjectResolverBase() {
+        protected ObjectResolverBase(bool skipCtorScan = false) {
+            if (skipCtorScan) {
+                requirements = Array.Empty<Type>();
+                factory = null;
+                return;
+            }
+
             ConstructorInfo selectedConstructor = null;
 
             var constructors = typeof(TConcrete).GetConstructors();
             for (var i = 0; i < constructors.Length; i++) {
                 if (constructors[i].IsPublic == false) { continue; }
-                
+
                 selectedConstructor = constructors[i];
                 break;
             }
@@ -25,10 +31,10 @@ namespace Buttr.Core {
             requirements = paramCount == 0 ? Array.Empty<Type>() : new Type[paramCount];
 
             for (var i = 0; i < paramCount; i++) {
-                
+
                 var paramType = paramInfos[i].ParameterType;
                 if (paramType.IsByRef) {
-                    paramType = paramType.GetElementType(); // unwrap ref type
+                    paramType = paramType.GetElementType();
                     ButtrLog.Log($"Type is passed by reference: reference passing does not function in Buttr {paramType}");
                 }
 
