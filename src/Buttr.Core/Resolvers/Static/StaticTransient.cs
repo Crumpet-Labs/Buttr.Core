@@ -5,11 +5,10 @@ namespace Buttr.Core {
         private readonly Func<TConcrete, TConcrete> m_Configuration;
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
-        
+
         internal StaticTransient(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
-            ApplicationRegistry.Register<TConcrete>(this);
         }
 
         public override bool IsResolved {
@@ -17,7 +16,7 @@ namespace Buttr.Core {
         }
 
         public override bool IsCached => false;
-        
+
         public override object Resolve() {
             if (m_FactoryOverride != null) {
                 m_IsResolved = true;
@@ -42,9 +41,7 @@ namespace Buttr.Core {
             }
         }
 
-        public void Dispose() {
-            ApplicationRegistry.Remove<TConcrete>();
-        }
+        public void Dispose() { }
     }
 
     internal sealed class StaticTransient<TAbstract, TConcrete> : ObjectResolverBase<TConcrete>, IDisposable {
@@ -55,9 +52,8 @@ namespace Buttr.Core {
         internal StaticTransient(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
-            ApplicationRegistry.Register<TAbstract>(this);
         }
-        
+
         public override bool IsResolved {
             get => m_IsResolved;
         }
@@ -89,8 +85,6 @@ namespace Buttr.Core {
             }
         }
 
-        public void Dispose() {
-            ApplicationRegistry.Remove<TAbstract>();
-        }
+        public void Dispose() { }
     }
 }

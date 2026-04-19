@@ -1,17 +1,16 @@
 using System;
 
 namespace Buttr.Core {
-    internal sealed class StaticSingleton<TConcrete> : ObjectResolverBase<TConcrete>, IDisposable{
+    internal sealed class StaticSingleton<TConcrete> : ObjectResolverBase<TConcrete>, IDisposable {
         private readonly Func<TConcrete, TConcrete> m_Configuration;
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
 
         private TConcrete m_Instance;
-        
+
         internal StaticSingleton(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
-            ApplicationRegistry.Register<TConcrete>(this);
         }
 
         public override bool IsResolved {
@@ -19,7 +18,7 @@ namespace Buttr.Core {
         }
 
         public override bool IsCached => true;
-        
+
         public override object Resolve() {
             if (null != m_Instance) return m_Instance;
 
@@ -63,22 +62,19 @@ namespace Buttr.Core {
             return m_Instance;
         }
 
-        public void Dispose() {
-            ApplicationRegistry.Remove<TConcrete>();
-        }
+        public void Dispose() { }
     }
 
     internal sealed class StaticSingleton<TAbstract, TConcrete> : ObjectResolverBase<TConcrete>, IDisposable {
         private readonly Func<TConcrete, TConcrete> m_Configuration;
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
-        
+
         private TConcrete m_Instance;
 
         internal StaticSingleton(Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
-            ApplicationRegistry.Register<TAbstract>(this);
         }
 
         public override bool IsResolved {
@@ -112,8 +108,6 @@ namespace Buttr.Core {
             return m_Instance;
         }
 
-        public void Dispose() {
-            ApplicationRegistry.Remove<TAbstract>();
-        }
+        public void Dispose() { }
     }
 }

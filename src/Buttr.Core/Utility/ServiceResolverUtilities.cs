@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Buttr.Core {
     internal static class ServiceResolverUtilities {
-        public static void TryResolve<TConcrete>(this Dictionary<Type, IObjectResolver> registry, Type[] requirements, object[] output) {
+        public static void TryResolve<TConcrete>(this Dictionary<Type, Registration> registry, Type[] requirements, object[] output) {
             if (requirements.Length == 0) return;
 
             var internalResolved = ArrayPool<object>.Get(requirements.Length);

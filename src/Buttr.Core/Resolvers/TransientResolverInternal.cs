@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace Buttr.Core {
     internal sealed class TransientResolverInternal<TConcrete> : ObjectResolverBase<TConcrete> {
-        private readonly Dictionary<Type, IObjectResolver> m_Registry;
+        private readonly Dictionary<Type, Registration> m_Registry;
         private readonly Func<TConcrete, TConcrete> m_Configuration;
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
 
-        public TransientResolverInternal(Dictionary<Type, IObjectResolver> registry, Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
+        public TransientResolverInternal(Dictionary<Type, Registration> registry, Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Registry = registry;
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;
         }
-        
+
         public override bool IsResolved {
             get => m_IsResolved;
         }

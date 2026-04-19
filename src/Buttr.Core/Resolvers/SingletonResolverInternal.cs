@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Buttr.Core {
     internal sealed class SingletonResolverInternal<TConcrete> : ObjectResolverBase<TConcrete> {
-        private readonly Dictionary<Type, IObjectResolver> m_Registry;
+        private readonly Dictionary<Type, Registration> m_Registry;
         private readonly Func<TConcrete, TConcrete> m_Configuration;
         private readonly Func<TConcrete> m_FactoryOverride;
         private bool m_IsResolved;
 
         private TConcrete m_Instance;
 
-        public SingletonResolverInternal(Dictionary<Type, IObjectResolver> registry, Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
+        public SingletonResolverInternal(Dictionary<Type, Registration> registry, Func<TConcrete, TConcrete> configuration, Func<TConcrete> factoryOverride) : base(skipCtorScan: factoryOverride != null) {
             m_Registry = registry;
             m_Configuration = configuration;
             m_FactoryOverride = factoryOverride;

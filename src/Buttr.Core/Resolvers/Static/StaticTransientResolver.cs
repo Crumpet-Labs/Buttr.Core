@@ -2,22 +2,30 @@ using System;
 
 namespace Buttr.Core {
     internal sealed class StaticTransientResolver<TConcrete> : IResolver, IDisposable, IConfigurable<TConcrete> {
+        private readonly Registration m_Registration;
         private Func<TConcrete, TConcrete> m_Configuration = ConfigurationFactory.Empty<TConcrete>();
         private Func<TConcrete> m_Factory;
-        
+
         private StaticTransient<TConcrete> m_Transient;
-        
+
+        internal StaticTransientResolver(Registration registration) {
+            m_Registration = registration;
+        }
+
         public void Resolve() {
             m_Transient = new StaticTransient<TConcrete>(m_Configuration, m_Factory);
+            m_Registration.Resolver = m_Transient;
+            ApplicationRegistry.Register(m_Registration);
             Application<TConcrete>.Set(m_Transient);
         }
 
         public void Dispose() {
             if (m_Transient == null) return;
-            
+
             m_Transient.Dispose();
             m_Transient = null;
-            
+
+            ApplicationRegistry.Remove(m_Registration.PrimaryKey);
             Application<TConcrete>.Set(null);
         }
 
@@ -31,23 +39,31 @@ namespace Buttr.Core {
             return this;
         }
     }
-    
+
     internal sealed class StaticTransientResolver<TAbstract, TConcrete> : IResolver, IDisposable, IConfigurable<TConcrete> {
+        private readonly Registration m_Registration;
         private Func<TConcrete, TConcrete> m_Configuration = ConfigurationFactory.Empty<TConcrete>();
         private Func<TConcrete> m_Factory;
 
         private StaticTransient<TAbstract, TConcrete> m_Transient;
 
+        internal StaticTransientResolver(Registration registration) {
+            m_Registration = registration;
+        }
+
         public void Resolve() {
             m_Transient = new StaticTransient<TAbstract, TConcrete>(m_Configuration, m_Factory);
+            m_Registration.Resolver = m_Transient;
+            ApplicationRegistry.Register(m_Registration);
             Application<TAbstract>.Set(m_Transient);
         }
 
         public void Dispose() {
             if (m_Transient == null) return;
-            
+
             m_Transient.Dispose();
             m_Transient = null;
+            ApplicationRegistry.Remove(m_Registration.PrimaryKey);
             Application<TAbstract>.Set(null);
         }
 

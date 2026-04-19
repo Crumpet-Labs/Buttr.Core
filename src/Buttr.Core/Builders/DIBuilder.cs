@@ -50,15 +50,15 @@ namespace Buttr.Core {
     /// Resolvers listed here will first resolve using the builders registry, if the required object is not found it will use the static registry.
     /// </remarks>
     public class DIBuilder : IDIBuilder {
-        private readonly Dictionary<Type, IObjectResolver> m_Registry = new();
-        private readonly HashSet<Type> m_HiddenTypes = new();
+        private readonly List<Registration> m_Registrations = new();
+        private readonly Dictionary<Type, Registration> m_KeyIndex = new();
 
         private readonly IResolverCollection m_Resolvers;
         private readonly IResolverCollection m_Hidden;
 
         public DIBuilder() {
-            m_Resolvers = new ObjectResolverCollection(m_Registry);
-            m_Hidden = new HiddenObjectResolverCollection(m_Registry, m_HiddenTypes);
+            m_Resolvers = new ObjectResolverCollection(m_Registrations, m_KeyIndex);
+            m_Hidden = new HiddenObjectResolverCollection(m_Registrations, m_KeyIndex);
         }
 
         public IResolverCollection Resolvers => m_Resolvers;
@@ -90,7 +90,7 @@ namespace Buttr.Core {
             m_Hidden.Resolve();
             m_Resolvers.Resolve();
 
-            return new DIContainer(m_Registry, m_HiddenTypes);
+            return new DIContainer(m_Registrations, m_KeyIndex);
         }
     }
 }

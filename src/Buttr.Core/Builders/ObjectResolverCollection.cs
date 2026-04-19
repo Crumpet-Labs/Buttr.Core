@@ -3,33 +3,43 @@ using System.Collections.Generic;
 
 namespace Buttr.Core {
     internal sealed class ObjectResolverCollection : IResolverCollection {
-        private readonly Dictionary<Type, IObjectResolver> m_Registry;
+        private readonly List<Registration> m_Registrations;
+        private readonly Dictionary<Type, Registration> m_KeyIndex;
         private readonly List<IResolver> m_Resolvers = new();
 
-        internal ObjectResolverCollection(Dictionary<Type, IObjectResolver> registry) {
-            m_Registry = registry;
+        internal ObjectResolverCollection(List<Registration> registrations, Dictionary<Type, Registration> keyIndex) {
+            m_Registrations = registrations;
+            m_KeyIndex = keyIndex;
         }
 
         public IConfigurable<TConcrete> AddSingleton<TConcrete>() {
-            var resolver = new SingletonObjectResolver<TConcrete>(m_Registry);
+            var registration = new Registration(typeof(TConcrete), typeof(TConcrete), isHidden: false);
+            Track(registration);
+            var resolver = new SingletonObjectResolver<TConcrete>(registration, m_KeyIndex);
             m_Resolvers.Add(resolver);
             return resolver;
         }
 
         public IConfigurable<TConcrete> AddSingleton<TAbstract, TConcrete>() where TConcrete : TAbstract {
-            var resolver = new SingletonObjectResolver<TAbstract, TConcrete>(m_Registry);
+            var registration = new Registration(typeof(TAbstract), typeof(TConcrete), isHidden: false);
+            Track(registration);
+            var resolver = new SingletonObjectResolver<TAbstract, TConcrete>(registration, m_KeyIndex);
             m_Resolvers.Add(resolver);
             return resolver;
         }
 
         public IConfigurable<TConcrete> AddTransient<TConcrete>() {
-            var resolver = new TransientObjectResolver<TConcrete>(m_Registry);
+            var registration = new Registration(typeof(TConcrete), typeof(TConcrete), isHidden: false);
+            Track(registration);
+            var resolver = new TransientObjectResolver<TConcrete>(registration, m_KeyIndex);
             m_Resolvers.Add(resolver);
             return resolver;
         }
 
         public IConfigurable<TConcrete> AddTransient<TAbstract, TConcrete>() where TConcrete : TAbstract {
-            var resolver = new TransientObjectResolver<TAbstract, TConcrete>(m_Registry);
+            var registration = new Registration(typeof(TAbstract), typeof(TConcrete), isHidden: false);
+            Track(registration);
+            var resolver = new TransientObjectResolver<TAbstract, TConcrete>(registration, m_KeyIndex);
             m_Resolvers.Add(resolver);
             return resolver;
         }
@@ -42,6 +52,11 @@ namespace Buttr.Core {
             foreach (var resolver in m_Resolvers) {
                 if (resolver is IDisposable disposable) disposable.Dispose();
             }
+        }
+
+        private void Track(Registration registration) {
+            m_Registrations.Add(registration);
+            m_KeyIndex[registration.PrimaryKey] = registration;
         }
     }
 }

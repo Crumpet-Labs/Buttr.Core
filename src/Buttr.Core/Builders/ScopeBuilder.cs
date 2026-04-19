@@ -4,16 +4,16 @@ using System.Collections.Generic;
 namespace Buttr.Core {
     public sealed class ScopeBuilder : IDIBuilder {
         private readonly string m_Key;
-        private readonly Dictionary<Type, IObjectResolver> m_Registry = new();
-        private readonly HashSet<Type> m_HiddenTypes = new();
+        private readonly List<Registration> m_Registrations = new();
+        private readonly Dictionary<Type, Registration> m_KeyIndex = new();
 
         private readonly IResolverCollection m_Resolvers;
         private readonly IResolverCollection m_Hidden;
 
         public ScopeBuilder(string key) {
             m_Key = key;
-            m_Resolvers = new ObjectResolverCollection(m_Registry);
-            m_Hidden = new HiddenObjectResolverCollection(m_Registry, m_HiddenTypes);
+            m_Resolvers = new ObjectResolverCollection(m_Registrations, m_KeyIndex);
+            m_Hidden = new HiddenObjectResolverCollection(m_Registrations, m_KeyIndex);
         }
 
         public IResolverCollection Resolvers => m_Resolvers;
@@ -39,7 +39,7 @@ namespace Buttr.Core {
             m_Hidden.Resolve();
             m_Resolvers.Resolve();
 
-            var container = new ScopeContainer(m_Registry, m_HiddenTypes);
+            var container = new ScopeContainer(m_Registrations, m_KeyIndex);
             container.ScopeRegistration = ScopeRegistry.Register(m_Key, container);
             return container;
         }

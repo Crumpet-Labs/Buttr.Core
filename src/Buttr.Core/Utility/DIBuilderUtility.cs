@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Buttr.Core {
     internal static class DIBuilderUtility {
-        public static int CollectResolvedDependencies(this Dictionary<Type, IObjectResolver> registry, Type[] requirements, object[] output) {
+        public static int CollectResolvedDependencies(this Dictionary<Type, Registration> registry, Type[] requirements, object[] output) {
             var count = 0;
             for (var i = 0; i < requirements.Length; i++) {
                 var type = requirements[i];
                 if (type == null) continue;
-                if (registry.TryGetValue(type, out var resolver)) {
-                    output[i] = resolver.Resolve();
+                if (registry.TryGetValue(type, out var registration)) {
+                    output[i] = registration.Resolver.Resolve();
                     count++;
                 }
                 else {
@@ -19,7 +19,7 @@ namespace Buttr.Core {
             return count;
         }
 
-        public static int CollectUnresolvedTypes(this Dictionary<Type, IObjectResolver> registry, Type[] requirements, Type[] output) {
+        public static int CollectUnresolvedTypes(this Dictionary<Type, Registration> registry, Type[] requirements, Type[] output) {
             var count = 0;
             for (var i = 0; i < requirements.Length; i++) {
                 var type = requirements[i];

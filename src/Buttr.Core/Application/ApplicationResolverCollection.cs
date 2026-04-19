@@ -4,27 +4,31 @@ using System.Collections.Generic;
 namespace Buttr.Core {
     public sealed class ApplicationResolverCollection : IResolverCollection {
         private readonly List<IResolver> m_Resolvers = new();
-        
+
         public IConfigurable<TConcrete> AddSingleton<TConcrete>() {
-            var resolver = new StaticSingletonResolver<TConcrete>();
+            var registration = new Registration(typeof(TConcrete), typeof(TConcrete), isHidden: false);
+            var resolver = new StaticSingletonResolver<TConcrete>(registration);
             m_Resolvers.Add(resolver);
             return resolver;
         }
-        
+
         public IConfigurable<TConcrete> AddSingleton<TAbstract, TConcrete>() where TConcrete : TAbstract {
-            var resolver = new StaticSingletonResolver<TAbstract, TConcrete>();
+            var registration = new Registration(typeof(TAbstract), typeof(TConcrete), isHidden: false);
+            var resolver = new StaticSingletonResolver<TAbstract, TConcrete>(registration);
             m_Resolvers.Add(resolver);
             return resolver;
         }
-        
+
         public IConfigurable<TConcrete> AddTransient<TConcrete>() {
-            var resolver = new StaticTransientResolver<TConcrete>();
+            var registration = new Registration(typeof(TConcrete), typeof(TConcrete), isHidden: false);
+            var resolver = new StaticTransientResolver<TConcrete>(registration);
             m_Resolvers.Add(resolver);
             return resolver;
         }
-        
+
         public IConfigurable<TConcrete> AddTransient<TAbstract, TConcrete>() where TConcrete : TAbstract {
-            var resolver = new StaticTransientResolver<TAbstract, TConcrete>();
+            var registration = new Registration(typeof(TAbstract), typeof(TConcrete), isHidden: false);
+            var resolver = new StaticTransientResolver<TAbstract, TConcrete>(registration);
             m_Resolvers.Add(resolver);
             return resolver;
         }

@@ -11,13 +11,13 @@ namespace Buttr.Core {
     /// <typeparam name="TID">The ID for which behaviours are to be identified</typeparam>
     internal class DIContainer<TID> : IDIContainer<TID> {
         private readonly Dictionary<TID, IObjectResolver> m_Registry;
-        
+
         internal DIContainer(Dictionary<TID, IObjectResolver> registry) {
             m_Registry = registry;
         }
-        
+
         public Type Type => typeof(TID);
-        
+
         public T Get<T>(TID id) {
             if (m_Registry.TryGetValue(id, out var resolver)) {
                 return (T)resolver.Resolve();
@@ -50,41 +50,48 @@ namespace Buttr.Core {
     /// The container should be cached and kept for use until disposal. It's advised to dispose of containers when finished.
     /// </remarks>
     internal sealed class DIContainer : IDIContainer {
-        private readonly Dictionary<Type, IObjectResolver> m_Registry;
-        private readonly HashSet<Type> m_HiddenTypes;
+        private readonly List<Registration> m_Registrations;
+        private readonly Dictionary<Type, Registration> m_KeyIndex;
 
-        internal DIContainer(Dictionary<Type, IObjectResolver> registry, HashSet<Type> hiddenTypes) {
-            m_Registry = registry;
-            m_HiddenTypes = hiddenTypes;
+        internal DIContainer(List<Registration> registrations, Dictionary<Type, Registration> keyIndex) {
+            m_Registrations = registrations;
+            m_KeyIndex = keyIndex;
         }
 
         public T Get<T>() {
-            if (m_HiddenTypes.Contains(typeof(T)))
-                throw new ObjectResolverException("Attempting to retrieve a Hidden object from a DIContainer");
+            if (m_KeyIndex.TryGetValue(typeof(T), out var registration)) {
+                if (registration.IsHidden)
+                    throw new ObjectResolverException("Attempting to retrieve a Hidden object from a DIContainer");
 
-            if (m_Registry.TryGetValue(typeof(T), out var resolver))
-                return (T)resolver.Resolve();
+                return (T)registration.Resolver.Resolve();
+            }
 
             return default;
         }
 
         public bool TryGet<T>(out T value) {
-            if (m_HiddenTypes.Contains(typeof(T)))
-                throw new ObjectResolverException("Attempting to retrieve a Hidden object from a DIContainer");
+            if (m_KeyIndex.TryGetValue(typeof(T), out var registration)) {
+                if (registration.IsHidden)
+                    throw new ObjectResolverException("Attempting to retrieve a Hidden object from a DIContainer");
 
-            var found = m_Registry.TryGetValue(typeof(T), out var resolver);
-            value = found ? (T)resolver.Resolve() : default;
-            return found;
+                value = (T)registration.Resolver.Resolve();
+                return true;
+            }
+
+            value = default;
+            return false;
         }
 
         public void Dispose() {
-            foreach (var resolver in m_Registry.Values) {
-                if (resolver.IsCached && resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
+            foreach (var registration in m_Registrations) {
+                var resolver = registration.Resolver;
+                if (resolver != null && resolver.IsCached && resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
                     disposable.Dispose();
                 }
             }
 
-            m_Registry.Clear();
+            m_Registrations.Clear();
+            m_KeyIndex.Clear();
         }
     }
 }
