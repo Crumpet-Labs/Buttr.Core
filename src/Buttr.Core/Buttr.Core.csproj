@@ -2,6 +2,9 @@
   <PropertyGroup>
     <AssemblyName>Buttr.Core</AssemblyName>
     <RootNamespace>Buttr.Core</RootNamespace>
+    <PackageId>Buttr.Core</PackageId>
+    <Title>Buttr.Core</Title>
+    <Description>Engine-agnostic dependency-injection container for .NET. Pure C#, zero runtime dependencies, zero-alloc hot path. Ships bundled Roslyn analyzers. Targets netstandard2.1; compatible with Unity 6000, Godot 4, and modern .NET.</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +19,6 @@
           Pack="true"
           PackagePath="analyzers/dotnet/cs"
           Visible="false" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 </Project>

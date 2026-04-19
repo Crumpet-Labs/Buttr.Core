@@ -2,8 +2,14 @@
   <PropertyGroup>
     <AssemblyName>Buttr.Injection</AssemblyName>
     <RootNamespace>Buttr.Injection</RootNamespace>
+    <PackageId>Buttr.Injection</PackageId>
+    <Title>Buttr.Injection</Title>
+    <Description>[Inject] marker attribute and InjectionProcessor registry for Buttr.Core. Consumed by engine-side source generators (Unity today; Godot and Stride later). Requires Buttr.Core.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Buttr.Core\Buttr.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 </Project>

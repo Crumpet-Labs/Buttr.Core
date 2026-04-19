@@ -13,5 +13,12 @@
     <Authors>Crumpet Labs</Authors>
     <Product>Buttr</Product>
     <Copyright>Copyright (c) 2024-2026 Crumpet Labs</Copyright>
+
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Crumpet-Labs/Buttr.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Crumpet-Labs/Buttr.Core</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>dependency-injection;di;ioc;container;buttr;engine-agnostic;unity;godot</PackageTags>
   </PropertyGroup>
 </Project>
