@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.3.0 — Performance audit + `All<T>` zero-alloc
+
+Full BenchmarkDotNet pass over the resolve hot paths (baseline + post-fix
+reports in `Docs/Benchmarks/`). Findings:
+
+- **Singleton `Get<T>` was already zero-alloc on every container** — the Stage 1
+  Registration refactor didn't regress the hottest path.
+- **Transient allocation equals the new instance** — `TryResolve` / `ArrayPool`
+  path is effectively free in steady state.
+- **`All<T>` allocated 48–56 B per call** — the `yield return` state machine
+  was creating a fresh ref-type enumerator every call.
+
+### Changes
+
+- New `RegistrationEnumerable<T>` struct (with a nested struct `Enumerator`)
+  replaces the compiler-synthesised iterator for bulk resolution.
+- `IDIContainer.All<T>()` return type changes from `IEnumerable<T>` to
+  `RegistrationEnumerable<T>`. The struct still implements `IEnumerable<T>`
+  so LINQ and legacy call sites keep working; `foreach` now hits the struct
+  `GetEnumerator()` and allocates zero.
+- Same treatment for `Application.All<T>()`.
+
+### Measured result
+
+`All<T>` drops from 48–56 B to **0 B** per call across `DIContainer`,
+`ScopeContainer`, and `Application`. Per-call time also improves 15–48 %
+purely from avoiding the state-machine allocation.
+
+### Deferred
+
+`CollectionsMarshal.GetValueRefOrNullRef` micro-optimisation on `Get<T>`
+would require multi-targeting the library (netstandard2.1 → +net8.0) for a
+~1 ns saving. Disproportionate trade; revisit as a separate call on
+multi-targeting.
+
 ## 1.2.0 — Analyzers
 
 Five compile-time diagnostics ship alongside Buttr.Core via a new
