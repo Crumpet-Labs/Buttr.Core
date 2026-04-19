@@ -17,6 +17,7 @@ namespace Buttr.Core {
             m_Registration.Resolver = m_Singleton;
             ApplicationRegistry.Register(m_Registration);
             Application<TConcrete>.Set(m_Singleton);
+            AliasSupport.SetApplicationForAliases(m_Registration, m_Singleton);
         }
 
         public void Dispose() {
@@ -28,7 +29,8 @@ namespace Buttr.Core {
 
             m_Singleton.Dispose();
             m_Singleton = null;
-            ApplicationRegistry.Remove(m_Registration.PrimaryKey);
+            AliasSupport.ClearApplicationForAliases(m_Registration);
+            ApplicationRegistry.Remove(m_Registration);
             Application<TConcrete>.Set(null);
         }
 
@@ -39,6 +41,11 @@ namespace Buttr.Core {
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithFactory(Func<TConcrete> factory) {
             m_Factory = factory;
+            return this;
+        }
+
+        IConfigurable<TConcrete> IConfigurable<TConcrete>.As<TAlias>() {
+            AliasSupport.StageApplicationAlias<TConcrete, TAlias>(m_Registration);
             return this;
         }
     }
@@ -59,6 +66,7 @@ namespace Buttr.Core {
             m_Registration.Resolver = m_Singleton;
             ApplicationRegistry.Register(m_Registration);
             Application<TAbstract>.Set(m_Singleton);
+            AliasSupport.SetApplicationForAliases(m_Registration, m_Singleton);
         }
 
         public void Dispose() {
@@ -70,7 +78,8 @@ namespace Buttr.Core {
 
             m_Singleton.Dispose();
             m_Singleton = null;
-            ApplicationRegistry.Remove(m_Registration.PrimaryKey);
+            AliasSupport.ClearApplicationForAliases(m_Registration);
+            ApplicationRegistry.Remove(m_Registration);
             Application<TConcrete>.Set(null);
         }
 
@@ -81,6 +90,11 @@ namespace Buttr.Core {
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithFactory(Func<TConcrete> factory) {
             m_Factory = factory;
+            return this;
+        }
+
+        IConfigurable<TConcrete> IConfigurable<TConcrete>.As<TAlias>() {
+            AliasSupport.StageApplicationAlias<TConcrete, TAlias>(m_Registration);
             return this;
         }
     }

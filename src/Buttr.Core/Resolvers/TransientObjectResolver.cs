@@ -26,6 +26,11 @@ namespace Buttr.Core {
             m_Factory = factory;
             return this;
         }
+
+        IConfigurable<TConcrete> IConfigurable<TConcrete>.As<TAlias>() {
+            AliasSupport.AddLocalAlias<TConcrete, TAlias>(m_Registration, m_Registry);
+            return this;
+        }
     }
 
     internal sealed class TransientObjectResolver<TAbstract, TConcrete> : IResolver, IConfigurable<TConcrete> where TConcrete : TAbstract {
@@ -50,6 +55,11 @@ namespace Buttr.Core {
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithFactory(Func<TConcrete> factory) {
             m_Factory = factory;
+            return this;
+        }
+
+        IConfigurable<TConcrete> IConfigurable<TConcrete>.As<TAlias>() {
+            AliasSupport.AddLocalAlias<TConcrete, TAlias>(m_Registration, m_Registry);
             return this;
         }
     }

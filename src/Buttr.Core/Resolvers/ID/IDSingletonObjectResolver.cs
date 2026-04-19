@@ -27,5 +27,9 @@ namespace Buttr.Core {
             m_Factory = factory;
             return this;
         }
+
+        IConfigurable<TConcrete> IConfigurable<TConcrete>.As<TAlias>() {
+            throw new NotSupportedException("Aliasing is not supported on ID-keyed registrations. Use a type-keyed DIBuilder instead.");
+        }
     }
 }

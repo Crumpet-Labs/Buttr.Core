@@ -41,6 +41,16 @@ namespace Buttr.Core {
             return false;
         }
 
+        public IEnumerable<T> All<T>() {
+            var target = typeof(T);
+            for (var i = 0; i < m_Registrations.Count; i++) {
+                var registration = m_Registrations[i];
+                if (registration.IsHidden) continue;
+                if (target.IsAssignableFrom(registration.ConcreteType) == false) continue;
+                yield return (T)registration.Resolver.Resolve();
+            }
+        }
+
         public void Dispose() {
             foreach (var registration in m_Registrations) {
                 var resolver = registration.Resolver;

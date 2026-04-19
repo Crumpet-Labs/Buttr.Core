@@ -26,7 +26,7 @@ namespace Buttr.Core {
 
             m_Singleton.Dispose();
             m_Singleton = null;
-            ApplicationRegistry.Remove(m_Registration.PrimaryKey);
+            ApplicationRegistry.Remove(m_Registration);
         }
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
@@ -36,6 +36,11 @@ namespace Buttr.Core {
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithFactory(Func<TConcrete> factory) {
             m_Factory = factory;
+            return this;
+        }
+
+        IConfigurable<TConcrete> IConfigurable<TConcrete>.As<TAlias>() {
+            AliasSupport.StageApplicationAlias<TConcrete, TAlias>(m_Registration);
             return this;
         }
     }
@@ -65,7 +70,7 @@ namespace Buttr.Core {
 
             m_Singleton.Dispose();
             m_Singleton = null;
-            ApplicationRegistry.Remove(m_Registration.PrimaryKey);
+            ApplicationRegistry.Remove(m_Registration);
         }
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
@@ -75,6 +80,11 @@ namespace Buttr.Core {
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithFactory(Func<TConcrete> factory) {
             m_Factory = factory;
+            return this;
+        }
+
+        IConfigurable<TConcrete> IConfigurable<TConcrete>.As<TAlias>() {
+            AliasSupport.StageApplicationAlias<TConcrete, TAlias>(m_Registration);
             return this;
         }
     }

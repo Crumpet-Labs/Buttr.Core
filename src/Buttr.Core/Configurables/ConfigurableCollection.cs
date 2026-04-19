@@ -54,5 +54,15 @@ namespace Buttr.Core {
 
             return this;
         }
+
+        public IConfigurableCollection As<TConcrete, TAlias>() {
+            if (m_Configurables.TryGetValue(typeof(TConcrete), out var configurable)) {
+                var typedConfigurable = (IConfigurable<TConcrete>)configurable;
+                typedConfigurable.As<TAlias>();
+            } else
+                throw new ConfigurableException($"Configuration for type {typeof(TConcrete)} does not exist within this Configurable Collection");
+
+            return this;
+        }
     }
 }
