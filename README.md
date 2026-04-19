@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Crumpet-Labs/Buttr.Core/main/Docs/Images/buttr-wordmark.svg" alt="Buttr" width="320" />
+  <img src="Docs/Images/buttr-wordmark.svg" alt="Buttr" width="320" />
 </p>
 
 <p align="center">
