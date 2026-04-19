@@ -3,4 +3,18 @@
     <AssemblyName>Buttr.Core</AssemblyName>
     <RootNamespace>Buttr.Core</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Buttr.Core.Analyzers\Buttr.Core.Analyzers.csproj"
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="Analyzer"
+                      PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Buttr.Core.Analyzers\bin\$(Configuration)\netstandard2.0\Buttr.Core.Analyzers.dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs"
+          Visible="false" />
+  </ItemGroup>
 </Project>

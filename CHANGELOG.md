@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.2.0 — Analyzers
+
+Five compile-time diagnostics ship alongside Buttr.Core via a new
+`Buttr.Core.Analyzers` project bundled into the Buttr.Core NuGet at
+`analyzers/dotnet/cs/`. Consumers referencing Buttr.Core pick the analyzers up
+automatically; no extra package reference is needed.
+
+### Rules
+
+- **BUTTR004** (Warning) — constructor parameter of a registered type may not
+  be resolvable from its container; diagnostic-only (no fixer, auto-fix is
+  inherently ambiguous).
+- **BUTTR006** (Error) — same type registered twice in the same container; the
+  second registration overwrites the first. Fixer removes the duplicate.
+- **BUTTR012** (Warning) — `IDisposable` type registered as transient; the
+  container doesn't track or dispose transients. Fixer converts to singleton.
+- **BUTTR013** (Error) — alias type passed to `.As<TAlias>()` is not a
+  supertype of the concrete type. Replaces the runtime
+  `ObjectResolverException` thrown in 1.1. Fixer suggests any interface or
+  base class the concrete does implement.
+- **BUTTR014** (Error) — two registrations claim the same alias key. Replaces
+  the runtime `DuplicateAliasException`. Fixer removes the second `.As<>()`
+  call.
+
+### Unity coordination
+
+`Buttr.Unity.SourceGeneration` retains Unity-specific rules (BUTTR001 partial
+class requirement, BUTTR011 non-MonoBehaviour `[Inject]`) and the
+`InjectSourceGenerator`. Unity's copies of BUTTR004, BUTTR006, and BUTTR012
+should be deleted in the matching Buttr Unity 2.3.0 release — Core's analyzer
+now owns those rule IDs. IDs and messages are stable; no user-facing change
+apart from the rules firing from a different assembly.
+
 ## 1.1.0 — Aliasing
 
 Multi-type-key registrations plus bulk resolution. One resolver can now be
