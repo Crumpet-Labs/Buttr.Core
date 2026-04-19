@@ -39,24 +39,14 @@ namespace Buttr.Core.Tests {
         }
 
         [Test]
-        public void WithFactory_DoesNotBypassCtorDependencyValidation_KnownQuirk() {
-            // Current behaviour: StaticSingleton.Resolve() inspects the first public
-            // ctor and validates its dependencies against ApplicationRegistry BEFORE
-            // deciding whether to call the user's factory or the default expression-
-            // tree factory. So a factory override still fails if ctor deps are missing.
-            //
-            // Arguably this should short-circuit — a user-provided factory takes
-            // responsibility for construction and ctor deps are irrelevant. Filing
-            // as a known quirk; if behaviour changes to bypass validation, this test
-            // flags it.
+        public void WithFactory_BypassesCtorDependencyValidation() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<NeedsMissingDep>()
                 .WithFactory(() => new NeedsMissingDep(null));
+            using var app = (IDisposable)builder.Build();
 
-            Assert.Throws<ObjectResolverException>(() => {
-                using var app = (IDisposable)builder.Build();
-                _ = Application<NeedsMissingDep>.Get();
-            });
+            var resolved = Application<NeedsMissingDep>.Get();
+            Assert.That(resolved, Is.Not.Null);
         }
 
         [Test]

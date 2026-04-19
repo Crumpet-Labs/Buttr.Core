@@ -61,18 +61,18 @@ namespace Buttr.Core.Tests {
         }
 
         [Test]
-        public void UnregisteredType_ErrorMessage_ContainsLiteralPlaceholder_KnownQuirk() {
-            // ConfigurableCollection's error strings are missing the `$`
-            // interpolation prefix, so `{typeof(TConcrete)}` is emitted literally
-            // instead of the actual type name. Documented in KNOWN_ISSUES.md.
+        public void UnregisteredType_ErrorMessage_IncludesTypeName() {
             var collection = new ConfigurableCollection();
+
             var ex = Assert.Throws<ConfigurableException>(
                 () => collection.WithConfiguration<Unrelated>(u => u));
-            Assert.That(ex.Message, Does.Contain("{typeof(TConcrete)}"));
+            Assert.That(ex.Message, Does.Contain(typeof(Unrelated).ToString()));
+            Assert.That(ex.Message, Does.Not.Contain("{typeof"));
 
             var ex2 = Assert.Throws<ConfigurableException>(
                 () => collection.WithFactory<Unrelated>(() => new Unrelated()));
-            Assert.That(ex2.Message, Does.Contain("{typeof(TConcrete)}"));
+            Assert.That(ex2.Message, Does.Contain(typeof(Unrelated).ToString()));
+            Assert.That(ex2.Message, Does.Not.Contain("{typeof"));
         }
 
         [Test]

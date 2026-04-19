@@ -3,12 +3,6 @@ using System.Collections.Generic;
 
 namespace Buttr.Core {
     internal static class ServiceResolverUtilities {
-        /// <summary>
-        /// Resolves a consumer's constructor-parameter dependencies from the
-        /// container's registry first, then falls back to <see cref="ApplicationRegistry"/>
-        /// for anything not found. The returned <paramref name="output"/> is
-        /// index-aligned with <paramref name="requirements"/> — no reorder needed.
-        /// </summary>
         public static void TryResolve<TConcrete>(this Dictionary<Type, IObjectResolver> registry, Type[] requirements, object[] output) {
             if (requirements.Length == 0) return;
 
@@ -29,7 +23,6 @@ namespace Buttr.Core {
                 if (internalCount + externalCount != requirements.Length)
                     throw new ObjectResolverException($"Unable to resolve all dependencies for {typeof(TConcrete)}");
 
-                // Both buffers are index-aligned with requirements — merge slot-by-slot.
                 for (var i = 0; i < requirements.Length; i++) {
                     output[i] = internalResolved[i] ?? applicationResolved[i];
                     if (output[i] == null)
