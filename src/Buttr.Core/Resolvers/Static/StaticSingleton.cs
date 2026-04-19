@@ -35,15 +35,20 @@ namespace Buttr.Core {
                 try {
                     ApplicationRegistry.GetDependencies(requirements, dependencies);
                 }
-                catch (Exception) {
-                    var array = ArrayPool<string>.Get(requirements.Length);
-
+                catch (Exception ex) {
+                    var found = new System.Collections.Generic.List<string>();
+                    var unresolved = new System.Collections.Generic.List<string>();
                     for (var i = 0; i < requirements.Length; i++) {
-                        var requirement = requirements[i];
-                        array[i] = requirement.FullName;
+                        if (dependencies[i] != null) found.Add(requirements[i].FullName);
+                        else unresolved.Add(requirements[i].FullName);
                     }
 
-                    throw new ObjectResolverException($"Potential cyclic dependency located in {typeof(TConcrete)}: See dependencies: [{string.Join(", ", array)}]");
+                    throw new ObjectResolverException(
+                        $"Failed to resolve dependencies for {typeof(TConcrete)}. " +
+                        $"Found: [{string.Join(", ", found)}]. " +
+                        $"Unresolved: [{string.Join(", ", unresolved)}]. " +
+                        $"See inner exception for the underlying failure.",
+                        ex);
                 }
 
                 if (dependencies.TryValidate(requirements) == false) {

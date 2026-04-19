@@ -10,9 +10,6 @@ namespace Buttr.Core.Tests {
             public Branch(Leaf leaf) { Leaf = leaf; }
         }
 
-        // A chain where the deepest dependency is unregistered. Resolving Top triggers
-        // the error-formatting path in StaticSingleton.Resolve() (previously used
-        // JsonUtility.ToJson; now uses string.Join).
         public sealed class Missing { }
         public sealed class Middle {
             public Middle(Missing m) { }
@@ -39,16 +36,30 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<Middle>();
             builder.Resolvers.AddSingleton<Top>();
-            // Missing is intentionally NOT registered.
 
             using var app = (IDisposable)builder.Build();
 
-            // Resolution is lazy — forcing Get() on Top drives the
-            // StaticSingleton.Resolve() → error path (previously JsonUtility.ToJson,
-            // now string.Join).
+            var ex = Assert.Throws<ObjectResolverException>(() => _ = Application<Top>.Get());
+            Assert.That(ex.Message, Is.Not.Null.And.Not.Empty);
+        }
+
+        [Test]
+        public void NestedDependencyFailure_PreservesInnerExceptionAndListsFoundVsUnresolved() {
+            var builder = new ApplicationBuilder();
+            builder.Resolvers.AddSingleton<Middle>();
+            builder.Resolvers.AddSingleton<Top>();
+
+            using var app = (IDisposable)builder.Build();
+
             var ex = Assert.Throws<ObjectResolverException>(() => _ = Application<Top>.Get());
 
-            Assert.That(ex.Message, Is.Not.Null.And.Not.Empty);
+            Assert.That(ex.InnerException, Is.Not.Null);
+            Assert.That(ex.InnerException, Is.InstanceOf<ObjectResolverException>());
+
+            Assert.That(ex.Message, Does.Contain("Top"));
+            Assert.That(ex.Message, Does.Contain("Found:"));
+            Assert.That(ex.Message, Does.Contain("Unresolved:"));
+            Assert.That(ex.Message, Does.Contain("Middle"));
         }
     }
 }
