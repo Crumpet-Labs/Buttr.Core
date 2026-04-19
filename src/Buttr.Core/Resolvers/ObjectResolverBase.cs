@@ -39,7 +39,9 @@ namespace Buttr.Core {
         }
 
         public abstract bool IsResolved { get; }
-        
+
+        public abstract bool IsCached { get; }
+
         public abstract object Resolve();
     }
 }

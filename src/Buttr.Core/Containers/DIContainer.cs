@@ -34,15 +34,15 @@ namespace Buttr.Core {
 
         public void Dispose() {
             foreach (var resolver in m_Registry.Values) {
-                if (resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
+                if (resolver.IsCached && resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
                     disposable.Dispose();
                 }
             }
-            
+
             m_Registry.Clear();
         }
     }
-    
+
     /// <summary>
     /// Created from a <see cref="DIBuilder"/>. A container to retrieve objects from.
     /// </summary>
@@ -79,7 +79,7 @@ namespace Buttr.Core {
 
         public void Dispose() {
             foreach (var resolver in m_Registry.Values) {
-                if (resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
+                if (resolver.IsCached && resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
                     disposable.Dispose();
                 }
             }

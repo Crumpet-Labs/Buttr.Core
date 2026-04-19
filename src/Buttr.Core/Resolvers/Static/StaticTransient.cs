@@ -15,6 +15,8 @@ namespace Buttr.Core {
         public override bool IsResolved {
             get => m_IsResolved;
         }
+
+        public override bool IsCached => false;
         
         public override object Resolve() {
             if (m_FactoryOverride != null) {
@@ -59,6 +61,8 @@ namespace Buttr.Core {
         public override bool IsResolved {
             get => m_IsResolved;
         }
+
+        public override bool IsCached => false;
 
         public override object Resolve() {
             if (m_FactoryOverride != null) {

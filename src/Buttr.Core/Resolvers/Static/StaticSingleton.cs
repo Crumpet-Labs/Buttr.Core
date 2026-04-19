@@ -17,6 +17,8 @@ namespace Buttr.Core {
         public override bool IsResolved {
             get => m_IsResolved;
         }
+
+        public override bool IsCached => true;
         
         public override object Resolve() {
             if (null != m_Instance) return m_Instance;
@@ -77,6 +79,8 @@ namespace Buttr.Core {
         public override bool IsResolved {
             get => m_IsResolved;
         }
+
+        public override bool IsCached => true;
 
         public override object Resolve() {
             if (null != m_Instance) return m_Instance;

@@ -15,23 +15,19 @@ namespace Buttr.Core {
             m_Registry[typeof(TConcrete)] = new TransientResolverInternal<TConcrete>(m_Registry, m_Configuration, m_Factory);
         }
 
-        public void Dispose() {
-            if (m_Registry[typeof(TConcrete)].Resolve() is IDisposable disposable) {
-                disposable.Dispose();
-            }
-        }
-    
+        public void Dispose() { }
+
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
             m_Configuration = configuration;
             return this;
         }
-    
+
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithFactory(Func<TConcrete> factory) {
             m_Factory = factory;
             return this;
         }
     }
-    
+
     internal sealed class TransientObjectResolver<TAbstract, TConcrete> : IResolver, IConfigurable<TConcrete>  where TConcrete : TAbstract  {
         private readonly Dictionary<Type, IObjectResolver> m_Registry;
         private Func<TConcrete, TConcrete> m_Configuration = ConfigurationFactory.Empty<TConcrete>();
@@ -45,11 +41,7 @@ namespace Buttr.Core {
             m_Registry[typeof(TAbstract)] = new TransientResolverInternal<TConcrete>(m_Registry, m_Configuration, m_Factory);
         }
 
-        public void Dispose() {
-            if (m_Registry[typeof(TAbstract)].Resolve() is IDisposable disposable) {
-                disposable.Dispose();
-            }
-        }
+        public void Dispose() { }
     
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
             m_Configuration = configuration;

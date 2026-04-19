@@ -18,11 +18,7 @@ namespace Buttr.Core {
             m_Registry[m_ID] = new IDSingletonResolverInternal<TConcrete>(m_Configuration, m_Factory);
         }
 
-        public void Dispose() {
-            if (m_Registry[m_ID].Resolve() is IDisposable disposable) {
-                disposable.Dispose();
-            }
-        }
+        public void Dispose() { }
 
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
             m_Configuration = configuration;

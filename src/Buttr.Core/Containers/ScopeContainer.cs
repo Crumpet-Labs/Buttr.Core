@@ -38,7 +38,7 @@ namespace Buttr.Core {
 
         public void Dispose() {
             foreach (var resolver in m_Registry.Values) {
-                if (resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
+                if (resolver.IsCached && resolver.IsResolved && resolver.Resolve() is IDisposable disposable) {
                     disposable.Dispose();
                 }
             }
