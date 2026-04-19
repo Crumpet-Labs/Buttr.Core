@@ -15,8 +15,6 @@ namespace Buttr.Core {
             m_Registry[typeof(TConcrete)] = new TransientResolverInternal<TConcrete>(m_Registry, m_Configuration, m_Factory);
         }
 
-        public void Dispose() { }
-
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
             m_Configuration = configuration;
             return this;
@@ -41,8 +39,6 @@ namespace Buttr.Core {
             m_Registry[typeof(TAbstract)] = new TransientResolverInternal<TConcrete>(m_Registry, m_Configuration, m_Factory);
         }
 
-        public void Dispose() { }
-    
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
             m_Configuration = configuration;
             return this;

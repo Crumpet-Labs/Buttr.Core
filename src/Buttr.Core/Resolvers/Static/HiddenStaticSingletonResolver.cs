@@ -1,7 +1,7 @@
 using System;
 
 namespace Buttr.Core {
-    internal sealed class HiddenStaticSingletonResolver<TConcrete> : IResolver, IConfigurable<TConcrete> {
+    internal sealed class HiddenStaticSingletonResolver<TConcrete> : IResolver, IDisposable, IConfigurable<TConcrete> {
         private Func<TConcrete, TConcrete> m_Configuration = ConfigurationFactory.Empty<TConcrete>();
         private Func<TConcrete> m_Factory;
         private StaticSingleton<TConcrete> m_Singleton;
@@ -32,7 +32,7 @@ namespace Buttr.Core {
         }
     }
     
-    internal sealed class HiddenStaticSingletonResolver<TAbstract, TConcrete> : IResolver, IConfigurable<TConcrete> {
+    internal sealed class HiddenStaticSingletonResolver<TAbstract, TConcrete> : IResolver, IDisposable, IConfigurable<TConcrete> {
         private Func<TConcrete, TConcrete> m_Configuration = ConfigurationFactory.Empty<TConcrete>();
         private Func<TConcrete> m_Factory;
         private StaticSingleton<TAbstract,TConcrete> m_Singleton;

@@ -1,7 +1,7 @@
 using System;
 
 namespace Buttr.Core {
-    internal sealed class StaticTransientResolver<TConcrete> : IResolver, IConfigurable<TConcrete> {
+    internal sealed class StaticTransientResolver<TConcrete> : IResolver, IDisposable, IConfigurable<TConcrete> {
         private Func<TConcrete, TConcrete> m_Configuration = ConfigurationFactory.Empty<TConcrete>();
         private Func<TConcrete> m_Factory;
         
@@ -32,7 +32,7 @@ namespace Buttr.Core {
         }
     }
     
-    internal sealed class StaticTransientResolver<TAbstract, TConcrete> : IResolver, IConfigurable<TConcrete> {
+    internal sealed class StaticTransientResolver<TAbstract, TConcrete> : IResolver, IDisposable, IConfigurable<TConcrete> {
         private Func<TConcrete, TConcrete> m_Configuration = ConfigurationFactory.Empty<TConcrete>();
         private Func<TConcrete> m_Factory;
 

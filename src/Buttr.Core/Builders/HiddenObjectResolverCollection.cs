@@ -45,7 +45,9 @@ namespace Buttr.Core {
         }
 
         public void Dispose() {
-            foreach (var resolver in m_Resolvers) resolver.Dispose();
+            foreach (var resolver in m_Resolvers) {
+                if (resolver is IDisposable disposable) disposable.Dispose();
+            }
         }
     }
 }

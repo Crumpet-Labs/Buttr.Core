@@ -1,7 +1,5 @@
-using System;
-
 namespace Buttr.Core {
-    public interface IResolver : IDisposable {
+    public interface IResolver {
         void Resolve();
     }
 }

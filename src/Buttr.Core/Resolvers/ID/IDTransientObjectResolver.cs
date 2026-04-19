@@ -18,8 +18,6 @@ namespace Buttr.Core {
             m_Registry[m_ID] = new IDTransientResolverInternal<TConcrete>(m_Configuration, m_Factory);
         }
 
-        public void Dispose() { }
-
         IConfigurable<TConcrete> IConfigurable<TConcrete>.WithConfiguration(Func<TConcrete, TConcrete> configuration) {
             m_Configuration = configuration;
             return this;

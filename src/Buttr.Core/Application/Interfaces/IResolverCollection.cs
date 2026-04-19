@@ -1,5 +1,7 @@
+using System;
+
 namespace Buttr.Core {
-    public interface IResolverCollection : IResolver {
+    public interface IResolverCollection : IResolver, IDisposable {
         public IConfigurable<TConcrete> AddSingleton<TConcrete>();
         public IConfigurable<TConcrete> AddSingleton<TAbstract, TConcrete>() where TConcrete : TAbstract;
         public IConfigurable<TConcrete> AddTransient<TConcrete>();

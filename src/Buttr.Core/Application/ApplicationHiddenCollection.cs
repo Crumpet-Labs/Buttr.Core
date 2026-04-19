@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Buttr.Core {
@@ -41,7 +42,9 @@ namespace Buttr.Core {
         }
 
         public void Dispose() {
-            foreach(var resolver in m_Resolvers) resolver.Dispose();
+            foreach (var resolver in m_Resolvers) {
+                if (resolver is IDisposable disposable) disposable.Dispose();
+            }
         }
     }
 }
