@@ -17,6 +17,11 @@ namespace Buttr.Core {
         }
         
         public override object Resolve() {
+            if (m_FactoryOverride != null) {
+                m_IsResolved = true;
+                return m_Configuration(m_FactoryOverride());
+            }
+
             var dependencies = ArrayPool<object>.Get(requirements.Length);
             try {
                 if(requirements.Length > 0 ) {
@@ -28,20 +33,18 @@ namespace Buttr.Core {
 
                 m_IsResolved = true;
 
-                return m_Configuration(m_FactoryOverride == null
-                    ? factory(dependencies)
-                    : m_FactoryOverride());
+                return m_Configuration(factory(dependencies));
             }
             finally {
                 ArrayPool<object>.Release(dependencies);
             }
         }
-        
+
         public void Dispose() {
             ApplicationRegistry.Remove<TConcrete>();
         }
     }
-    
+
     internal sealed class StaticTransient<TAbstract, TConcrete> : ObjectResolverBase<TConcrete>, IDisposable {
         private readonly Func<TConcrete, TConcrete> m_Configuration;
         private readonly Func<TConcrete> m_FactoryOverride;
@@ -58,25 +61,30 @@ namespace Buttr.Core {
         }
 
         public override object Resolve() {
+            if (m_FactoryOverride != null) {
+                m_IsResolved = true;
+                return m_Configuration(m_FactoryOverride());
+            }
+
             var dependencies = ArrayPool<object>.Get(requirements.Length);
-            
+
             try {
-                ApplicationRegistry.GetDependencies(requirements, dependencies);
-                if (dependencies.TryValidate(requirements) == false) {
-                    throw new ObjectResolverException($"Unable to locate all dependencies for {typeof(TConcrete)})");
+                if (requirements.Length > 0) {
+                    ApplicationRegistry.GetDependencies(requirements, dependencies);
+                    if (dependencies.TryValidate(requirements) == false) {
+                        throw new ObjectResolverException($"Unable to locate all dependencies for {typeof(TConcrete)})");
+                    }
                 }
 
                 m_IsResolved = true;
 
-                return m_Configuration(m_FactoryOverride == null
-                    ? factory(dependencies)
-                    : m_FactoryOverride());
+                return m_Configuration(factory(dependencies));
             }
             finally {
                 ArrayPool<object>.Release(dependencies);
             }
         }
-        
+
         public void Dispose() {
             ApplicationRegistry.Remove<TAbstract>();
         }

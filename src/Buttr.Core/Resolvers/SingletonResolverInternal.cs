@@ -23,20 +23,22 @@ namespace Buttr.Core {
         public override object Resolve() {
             if (m_Instance != null) return m_Instance;
 
+            if (m_FactoryOverride != null) {
+                m_Instance = m_Configuration(m_FactoryOverride());
+                m_IsResolved = true;
+                return m_Instance;
+            }
+
             var resolved = ArrayPool<object>.Get(requirements.Length);
             if (requirements.Length > 0) {
                 m_Registry.TryResolve<TConcrete>(requirements, resolved);
             }
 
-            m_Instance = m_Configuration(
-                m_FactoryOverride == null
-                    ? factory(resolved)
-                    : m_FactoryOverride()
-            );
+            m_Instance = m_Configuration(factory(resolved));
 
             m_IsResolved = true;
             ArrayPool<object>.Release(resolved);
-            
+
             return m_Instance;
         }
     }

@@ -19,7 +19,13 @@ namespace Buttr.Core {
 
         public override object Resolve() {
             if (m_Instance != null) return m_Instance;
-            
+
+            if (m_FactoryOverride != null) {
+                m_Instance = m_Configuration(m_FactoryOverride());
+                m_IsResolved = true;
+                return m_Instance;
+            }
+
             var dependencies = ArrayPool<object>.Get(requirements.Length);
             if(requirements.Length > 0 ) {
                 ApplicationRegistry.GetDependencies(requirements, dependencies);
@@ -28,13 +34,11 @@ namespace Buttr.Core {
                 }
             }
 
-            m_Instance = m_Configuration(m_FactoryOverride == null
-                ? factory(dependencies)
-                : m_FactoryOverride());
-            
+            m_Instance = m_Configuration(factory(dependencies));
+
             ArrayPool<object>.Release(dependencies);
             m_IsResolved = true;
-            
+
             return m_Instance;
         }
     }

@@ -39,9 +39,9 @@ namespace Buttr.Core {
             if (m_Configurables.TryGetValue(typeof(TConcrete), out var configurable)) {
                 var typedConfigurable = (IConfigurable<TConcrete>)configurable;
                 typedConfigurable.WithConfiguration(configuration);
-            } else 
-                throw new ConfigurableException("Configuration for type {typeof(TConcrete)} does not exist within this Configurable Collection");
-            
+            } else
+                throw new ConfigurableException($"Configuration for type {typeof(TConcrete)} does not exist within this Configurable Collection");
+
             return this;
         }
 
@@ -49,8 +49,8 @@ namespace Buttr.Core {
             if (m_Configurables.TryGetValue(typeof(TConcrete), out var configurable)) {
                 var typedConfigurable = (IConfigurable<TConcrete>)configurable;
                 typedConfigurable.WithFactory(factory);
-            } else 
-                throw new ConfigurableException("Configuration for type {typeof(TConcrete)} does not exist within this Configurable Collection");
+            } else
+                throw new ConfigurableException($"Configuration for type {typeof(TConcrete)} does not exist within this Configurable Collection");
 
             return this;
         }

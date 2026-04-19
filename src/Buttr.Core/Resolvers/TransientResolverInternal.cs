@@ -19,17 +19,20 @@ namespace Buttr.Core {
         }
 
         public override object Resolve() {
+            if (m_FactoryOverride != null) {
+                m_IsResolved = true;
+                return m_Configuration(m_FactoryOverride());
+            }
+
             var resolved = ArrayPool<object>.Get(requirements.Length);
             try {
                 if (requirements.Length > 0) {
                     m_Registry.TryResolve<TConcrete>(requirements, resolved);
                 }
-                
+
                 m_IsResolved = true;
 
-                return m_Configuration(m_FactoryOverride == null
-                    ? factory(resolved)
-                    : m_FactoryOverride());
+                return m_Configuration(factory(resolved));
             }
             finally {
                 ArrayPool<object>.Release(resolved);
