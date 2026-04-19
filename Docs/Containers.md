@@ -18,8 +18,10 @@ A self-contained type-keyed container. Created via `DIBuilder`.
 var builder = new DIBuilder();
 builder.Resolvers.AddSingleton<IGreeter, Greeter>();
 
-using var container = (IDisposable)builder.Build();
-var greeter = ((IDIContainer)container).Get<IGreeter>();
+var container = builder.Build();
+var greeter = container.Get<IGreeter>();
+
+container.Dispose();
 ```
 
 Use this when:
@@ -37,7 +39,10 @@ Same as `DIContainer` but named. Created via `ScopeBuilder(string key)`. The key
 var scope = new ScopeBuilder("inventory-scope");
 scope.Resolvers.AddSingleton<IInventoryService, InventoryService>();
 
-using var container = (IDisposable)scope.Build();
+var container = scope.Build();
+var service = container.Get<IInventoryService>();
+
+container.Dispose();
 ```
 
 Use this when:
@@ -53,10 +58,13 @@ Created via `ApplicationBuilder`. Registrations populate the process-global `App
 ```csharp
 var app = new ApplicationBuilder();
 app.Resolvers.AddSingleton<IConfig, Config>();
-using var container = app.Build();
+var container = app.Build();
 
 // Accessible from anywhere, no container reference needed:
 var cfg = Application<IConfig>.Get();
+
+// When the application shuts down:
+container.Dispose();
 ```
 
 Use this when:

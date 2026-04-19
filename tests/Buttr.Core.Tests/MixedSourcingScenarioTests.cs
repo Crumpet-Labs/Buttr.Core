@@ -36,7 +36,7 @@ namespace Buttr.Core.Tests {
         public void PackageComposition_FeatureScopeConsumesGlobalInterface_Resolves() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<IAudio, AudioSystem>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var scope = new ScopeBuilder("inventory");
             scope.AddSingleton<IItemCatalog, ItemCatalog>();
@@ -52,7 +52,7 @@ namespace Buttr.Core.Tests {
         public void ParameterOrderIndependence_GlobalFirst_LocalSecond() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<IAudio, AudioSystem>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var scope = new ScopeBuilder("complex");
             scope.AddSingleton<IItemCatalog, ItemCatalog>();
@@ -69,7 +69,7 @@ namespace Buttr.Core.Tests {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<IAudio, AudioSystem>();
             app.Resolvers.AddSingleton<IItemCatalog, ItemCatalog>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var scope = new ScopeBuilder("test-scope");
             scope.AddSingleton<IAudio, SilentAudio>();
@@ -85,14 +85,14 @@ namespace Buttr.Core.Tests {
         public void MixedSourcing_DIBuilder_WithGlobalInterface_Resolves() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<IAudio, AudioSystem>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var builder = new DIBuilder();
             builder.AddSingleton<IItemCatalog, ItemCatalog>();
             builder.AddSingleton<InventoryController>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var controller = ((IDIContainer)container).Get<InventoryController>();
+            var controller = container.Get<InventoryController>();
             Assert.That(controller.Catalog, Is.InstanceOf<ItemCatalog>());
             Assert.That(controller.Audio, Is.InstanceOf<AudioSystem>());
         }

@@ -26,8 +26,8 @@ namespace Buttr.Core.Tests {
                 var builder = new DIBuilder();
                 builder.AddSingleton<IThing, Thing>()
                     .WithFactory(() => new Thing { V = 7 });
-                using var container = (IDisposable)builder.Build();
-                Assert.That(((IDIContainer)container).Get<IThing>().V, Is.EqualTo(7));
+                using var container = builder.Build();
+                Assert.That(container.Get<IThing>().V, Is.EqualTo(7));
             }
 
             [Test]
@@ -35,8 +35,8 @@ namespace Buttr.Core.Tests {
                 var builder = new DIBuilder();
                 builder.AddSingleton<IThing, Thing>()
                     .WithConfiguration(t => { t.V = 13; return t; });
-                using var container = (IDisposable)builder.Build();
-                Assert.That(((IDIContainer)container).Get<IThing>().V, Is.EqualTo(13));
+                using var container = builder.Build();
+                Assert.That(container.Get<IThing>().V, Is.EqualTo(13));
             }
 
             [Test]
@@ -46,7 +46,7 @@ namespace Buttr.Core.Tests {
                 var container = builder.Build();
                 var instance = (DisposableThing)container.Get<IThing>();
 
-                ((IDisposable)container).Dispose();
+                container.Dispose();
                 Assert.That(instance.Disposed, Is.True);
             }
         }
@@ -59,10 +59,10 @@ namespace Buttr.Core.Tests {
                 var builder = new DIBuilder();
                 builder.AddTransient<IThing, Thing>()
                     .WithFactory(() => new Thing { V = ++counter });
-                using var container = (IDisposable)builder.Build();
+                using var container = builder.Build();
 
-                Assert.That(((IDIContainer)container).Get<IThing>().V, Is.EqualTo(1));
-                Assert.That(((IDIContainer)container).Get<IThing>().V, Is.EqualTo(2));
+                Assert.That(container.Get<IThing>().V, Is.EqualTo(1));
+                Assert.That(container.Get<IThing>().V, Is.EqualTo(2));
             }
 
             [Test]
@@ -70,9 +70,9 @@ namespace Buttr.Core.Tests {
                 var builder = new DIBuilder();
                 builder.AddTransient<IThing, Thing>()
                     .WithConfiguration(t => { t.V = 21; return t; });
-                using var container = (IDisposable)builder.Build();
+                using var container = builder.Build();
 
-                Assert.That(((IDIContainer)container).Get<IThing>().V, Is.EqualTo(21));
+                Assert.That(container.Get<IThing>().V, Is.EqualTo(21));
             }
         }
 
@@ -86,10 +86,10 @@ namespace Buttr.Core.Tests {
                 var builder = new DIBuilder();
                 builder.AddTransient<Single>()
                     .WithFactory(() => new Single { V = ++counter });
-                using var container = (IDisposable)builder.Build();
+                using var container = builder.Build();
 
-                Assert.That(((IDIContainer)container).Get<Single>().V, Is.EqualTo(1));
-                Assert.That(((IDIContainer)container).Get<Single>().V, Is.EqualTo(2));
+                Assert.That(container.Get<Single>().V, Is.EqualTo(1));
+                Assert.That(container.Get<Single>().V, Is.EqualTo(2));
             }
 
             [Test]
@@ -97,9 +97,9 @@ namespace Buttr.Core.Tests {
                 var builder = new DIBuilder();
                 builder.AddTransient<Single>()
                     .WithConfiguration(s => { s.V = 33; return s; });
-                using var container = (IDisposable)builder.Build();
+                using var container = builder.Build();
 
-                Assert.That(((IDIContainer)container).Get<Single>().V, Is.EqualTo(33));
+                Assert.That(container.Get<Single>().V, Is.EqualTo(33));
             }
         }
 
@@ -117,7 +117,7 @@ namespace Buttr.Core.Tests {
                 var container = builder.Build();
                 var instance = container.Get<D>();
 
-                ((IDisposable)container).Dispose();
+                container.Dispose();
                 Assert.That(instance.Disposed, Is.True);
             }
         }
@@ -192,7 +192,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddSingleton<IDep, Dep>()
                     .WithFactory(() => new Dep { V = 101 });
                 builder.Resolvers.AddSingleton<Consumer>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<Consumer>.Get().I.V, Is.EqualTo(101));
             }
@@ -203,7 +203,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddSingleton<IDep, Dep>()
                     .WithConfiguration(d => { d.V = 202; return d; });
                 builder.Resolvers.AddSingleton<Consumer>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<Consumer>.Get().I.V, Is.EqualTo(202));
             }
@@ -214,7 +214,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddSingleton<ConcreteDep>()
                     .WithFactory(() => new ConcreteDep { V = 303 });
                 builder.Resolvers.AddSingleton<ConsumesConcrete>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<ConsumesConcrete>.Get().C.V, Is.EqualTo(303));
             }
@@ -225,7 +225,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddSingleton<ConcreteDep>()
                     .WithConfiguration(c => { c.V = 404; return c; });
                 builder.Resolvers.AddSingleton<ConsumesConcrete>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<ConsumesConcrete>.Get().C.V, Is.EqualTo(404));
             }
@@ -253,7 +253,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddTransient<IDep, Dep>()
                     .WithFactory(() => new Dep { V = ++seed });
                 builder.Resolvers.AddTransient<Consumer>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<Consumer>.Get().I.V, Is.EqualTo(1));
                 Assert.That(Application<Consumer>.Get().I.V, Is.EqualTo(2));
@@ -265,7 +265,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddTransient<IDep, Dep>()
                     .WithConfiguration(d => { d.V = 500; return d; });
                 builder.Resolvers.AddTransient<Consumer>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<Consumer>.Get().I.V, Is.EqualTo(500));
             }
@@ -277,7 +277,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddTransient<ConcreteDep>()
                     .WithFactory(() => new ConcreteDep { V = ++seed });
                 builder.Resolvers.AddTransient<ConsumesConcrete>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<ConsumesConcrete>.Get().C.V, Is.EqualTo(1));
                 Assert.That(Application<ConsumesConcrete>.Get().C.V, Is.EqualTo(2));
@@ -289,7 +289,7 @@ namespace Buttr.Core.Tests {
                 builder.Hidden.AddTransient<ConcreteDep>()
                     .WithConfiguration(c => { c.V = 600; return c; });
                 builder.Resolvers.AddTransient<ConsumesConcrete>();
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<ConsumesConcrete>.Get().C.V, Is.EqualTo(600));
             }
@@ -304,7 +304,7 @@ namespace Buttr.Core.Tests {
             public void Pair_WithFactory_Overrides() {
                 var builder = new ApplicationBuilder();
                 builder.Resolvers.AddTransient<IT, T>().WithFactory(() => new T { V = 800 });
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<IT>.Get().V, Is.EqualTo(800));
             }
@@ -313,7 +313,7 @@ namespace Buttr.Core.Tests {
             public void Pair_WithConfiguration_Transforms() {
                 var builder = new ApplicationBuilder();
                 builder.Resolvers.AddTransient<IT, T>().WithConfiguration(t => { t.V = 900; return t; });
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
 
                 Assert.That(Application<IT>.Get().V, Is.EqualTo(900));
             }

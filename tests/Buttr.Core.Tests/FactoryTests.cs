@@ -30,7 +30,7 @@ namespace Buttr.Core.Tests {
             // "Touched" field would surface any mutation.
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<NoArgs>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var resolved = Application<NoArgs>.Get();
             Assert.That(resolved.Touched, Is.EqualTo(0));
@@ -43,7 +43,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<Leaf>();
             builder.Resolvers.AddSingleton<Branch>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var branch = Application<Branch>.Get();
             Assert.That(branch.Dep, Is.Not.Null);

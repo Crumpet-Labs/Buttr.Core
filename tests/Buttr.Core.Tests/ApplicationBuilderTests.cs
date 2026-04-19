@@ -10,7 +10,7 @@ namespace Buttr.Core.Tests {
         public void ApplicationBuilder_Build_MakesTypeReachableViaApplicationGet() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<Service>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var resolved = Application<Service>.Get();
 
@@ -22,7 +22,7 @@ namespace Buttr.Core.Tests {
         public void ApplicationBuilder_SingletonThroughApplication_IsSameInstanceAcrossGets() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<Service>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var a = Application<Service>.Get();
             var b = Application<Service>.Get();

@@ -18,7 +18,7 @@ namespace Buttr.Core.Tests {
         public void WithFactory_ReplacesDefaultConstruction_OnSingleton() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<Item>().WithFactory(() => new Item(42));
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var resolved = Application<Item>.Get();
             Assert.That(resolved.Value, Is.EqualTo(42));
@@ -29,7 +29,7 @@ namespace Buttr.Core.Tests {
             var counter = 0;
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddTransient<Item>().WithFactory(() => new Item(++counter));
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var a = Application<Item>.Get();
             var b = Application<Item>.Get();
@@ -43,7 +43,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<NeedsMissingDep>()
                 .WithFactory(() => new NeedsMissingDep(null));
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var resolved = Application<NeedsMissingDep>.Get();
             Assert.That(resolved, Is.Not.Null);
@@ -54,7 +54,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<Item>()
                 .WithConfiguration(x => { x.Value = 100; return x; });
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<Item>.Get().Value, Is.EqualTo(100));
         }
@@ -65,7 +65,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<Item>()
                 .WithFactory(() => new Item(10))
                 .WithConfiguration(x => { x.Value *= 3; return x; });
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             // Factory produces 10 → configuration multiplies by 3 → 30
             Assert.That(Application<Item>.Get().Value, Is.EqualTo(30));
@@ -77,7 +77,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<Item>()
                 .WithConfiguration(x => { x.Value = 1; return x; })
                 .WithConfiguration(x => { x.Value = 2; return x; });
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<Item>.Get().Value, Is.EqualTo(2));
         }
@@ -88,7 +88,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<Item>()
                 .WithFactory(() => new Item(7))
                 .WithFactory(() => new Item(99));
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<Item>.Get().Value, Is.EqualTo(99));
         }
@@ -124,9 +124,9 @@ namespace Buttr.Core.Tests {
         public void WithFactory_Singleton_OverridesConstruction() {
             var builder = new DIBuilder();
             builder.AddSingleton<Widget>().WithFactory(() => new Widget("factory"));
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var w = ((IDIContainer)container).Get<Widget>();
+            var w = container.Get<Widget>();
             Assert.That(w.Label, Is.EqualTo("factory"));
         }
 
@@ -136,10 +136,10 @@ namespace Buttr.Core.Tests {
             var builder = new DIBuilder();
             builder.AddTransient<Widget>()
                 .WithConfiguration(w => { w.Label = "configured-" + (++seed); return w; });
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var a = ((IDIContainer)container).Get<Widget>();
-            var b = ((IDIContainer)container).Get<Widget>();
+            var a = container.Get<Widget>();
+            var b = container.Get<Widget>();
 
             Assert.That(a.Label, Is.EqualTo("configured-1"));
             Assert.That(b.Label, Is.EqualTo("configured-2"));

@@ -15,10 +15,10 @@ namespace Buttr.Core.Tests {
         public void DIBuilder_AddSingleton_ReturnsSameInstance() {
             var builder = new DIBuilder();
             builder.AddSingleton<IThing, Thing>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var a = ((IDIContainer)container).Get<IThing>();
-            var b = ((IDIContainer)container).Get<IThing>();
+            var a = container.Get<IThing>();
+            var b = container.Get<IThing>();
 
             Assert.That(a, Is.Not.Null);
             Assert.That(a, Is.SameAs(b));
@@ -28,10 +28,10 @@ namespace Buttr.Core.Tests {
         public void DIBuilder_AddTransient_ReturnsNewInstanceEachResolve() {
             var builder = new DIBuilder();
             builder.AddTransient<IThing, Thing>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var a = ((IDIContainer)container).Get<IThing>();
-            var b = ((IDIContainer)container).Get<IThing>();
+            var a = container.Get<IThing>();
+            var b = container.Get<IThing>();
 
             Assert.That(a, Is.Not.Null);
             Assert.That(b, Is.Not.Null);
@@ -45,7 +45,7 @@ namespace Buttr.Core.Tests {
             var container = builder.Build();
             var thing = container.Get<DisposableThing>();
 
-            ((IDisposable)container).Dispose();
+            container.Dispose();
 
             Assert.That(thing.Disposed, Is.True);
         }

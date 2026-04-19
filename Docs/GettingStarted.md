@@ -31,9 +31,11 @@ public sealed class Greeter : IGreeter {
 var builder = new DIBuilder();
 builder.Resolvers.AddSingleton<IGreeter, Greeter>();
 
-using var container = (IDisposable)builder.Build();
-var greeter = ((IDIContainer)container).Get<IGreeter>();
+var container = builder.Build();
+var greeter = container.Get<IGreeter>();
 System.Console.WriteLine(greeter.Greet("world"));
+
+container.Dispose();
 ```
 
 Two keys: `IGreeter` (the abstract consumers ask for) and `Greeter` (the concrete Buttr instantiates). One instance is created and shared.
@@ -65,7 +67,10 @@ builder.Resolvers.AddSingleton<IGreeter, Greeter>();
 builder.Resolvers.AddSingleton<ILogger, ConsoleLogger>();
 builder.Resolvers.AddTransient<Mailer>();
 
-var mailer = ((IDIContainer)container).Get<Mailer>();
+var container = builder.Build();
+var mailer = container.Get<Mailer>();
+
+container.Dispose();
 ```
 
 If a constructor parameter isn't registered, `Get<T>` throws `ObjectResolverException` at resolve time — or the `BUTTR004` analyzer catches it at compile time.
@@ -111,7 +116,11 @@ builder.Resolvers.AddSingleton<StartupPipeline>();
 builder.Resolvers.AddSingleton<LoggingPipeline>();
 builder.Resolvers.AddSingleton<ShutdownPipeline>();
 
-foreach (var p in ((IDIContainer)container).All<IPipeline>()) p.Run();
+var container = builder.Build();
+
+foreach (var p in container.All<IPipeline>()) p.Run();
+
+container.Dispose();
 ```
 
 `All<T>` returns every registration whose concrete type is assignable to `T`. Hidden registrations are excluded. Zero allocations on `foreach`.
@@ -123,7 +132,7 @@ For services that should be resolvable from anywhere without passing a container
 ```csharp
 var app = new ApplicationBuilder();
 app.Resolvers.AddSingleton<IConfig, Config>();
-using var container = app.Build();
+var container = app.Build();
 
 // Later, anywhere in the code:
 var cfg = Application<IConfig>.Get();
@@ -136,9 +145,9 @@ See [Containers](Containers.md) for when `Application` is the right choice.
 Containers implement `IDisposable`. Dispose to run cleanup — singletons that implement `IDisposable` get disposed, resolvers are torn down, scopes deregister.
 
 ```csharp
-using var container = (IDisposable)builder.Build();
+var container = builder.Build();
 // ... use container ...
-// automatic dispose at end of scope
+container.Dispose();
 ```
 
 Transient instances you receive via `Get<T>()` are **not** tracked for disposal — the consumer owns their lifetime.

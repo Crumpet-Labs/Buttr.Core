@@ -19,7 +19,7 @@ namespace Buttr.Core.Tests {
             var container = builder.Build();
             var instance = container.Get<Tracked>();
 
-            ((IDisposable)container).Dispose();
+            container.Dispose();
 
             Assert.That(instance.Count, Is.EqualTo(1));
         }
@@ -30,7 +30,7 @@ namespace Buttr.Core.Tests {
             builder.AddSingleton<Tracked>();
             var container = builder.Build();
 
-            ((IDisposable)container).Dispose();
+            container.Dispose();
 
             Assert.Pass("No throw; unresolved singleton not force-resolved during dispose.");
         }
@@ -44,7 +44,7 @@ namespace Buttr.Core.Tests {
             var a = container.Get<Tracked>();
             var b = container.Get<Tracked>();
 
-            ((IDisposable)container).Dispose();
+            container.Dispose();
 
             Assert.That(a.Count, Is.EqualTo(0));
             Assert.That(b.Count, Is.EqualTo(0));

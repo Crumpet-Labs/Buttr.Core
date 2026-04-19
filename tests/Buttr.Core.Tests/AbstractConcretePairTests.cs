@@ -21,7 +21,7 @@ namespace Buttr.Core.Tests {
         public void StaticSingletonResolver_Pair_ResolvesConcreteThroughAbstract() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<IThing, Thing>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var a = Application<IThing>.Get();
             var b = Application<IThing>.Get();
@@ -35,7 +35,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<IThing, Thing>()
                 .WithFactory(() => new Thing { Value = 11 });
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<IThing>.Get().Value, Is.EqualTo(11));
         }
@@ -45,7 +45,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<IThing, Thing>()
                 .WithConfiguration(t => { t.Value = 22; return t; });
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<IThing>.Get().Value, Is.EqualTo(22));
         }
@@ -54,7 +54,7 @@ namespace Buttr.Core.Tests {
         public void StaticSingletonResolver_Pair_Dispose_DisposesResolvedIDisposable() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<IThing, DisposableThing>();
-            var app = (IDisposable)builder.Build();
+            var app = builder.Build();
             var instance = (DisposableThing)Application<IThing>.Get();
 
             app.Dispose();
@@ -66,7 +66,7 @@ namespace Buttr.Core.Tests {
         public void StaticTransientResolver_Pair_ResolvesNewConcretePerGet() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddTransient<IThing, Thing>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var a = Application<IThing>.Get();
             var b = Application<IThing>.Get();
@@ -82,7 +82,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddTransient<IThing, Thing>()
                 .WithFactory(() => new Thing { Value = ++counter });
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<IThing>.Get().Value, Is.EqualTo(1));
             Assert.That(Application<IThing>.Get().Value, Is.EqualTo(2));
@@ -102,7 +102,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Hidden.AddSingleton<IHidden, Hidden>();
             builder.Resolvers.AddSingleton<VisibleConsumer>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var consumer = Application<VisibleConsumer>.Get();
             Assert.That(consumer.H, Is.InstanceOf<Hidden>());
@@ -113,7 +113,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Hidden.AddTransient<IHidden, Hidden>();
             builder.Resolvers.AddTransient<VisibleConsumer>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var a = Application<VisibleConsumer>.Get();
             var b = Application<VisibleConsumer>.Get();
@@ -132,7 +132,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Hidden.AddSingleton<ConcreteHidden>();
             builder.Resolvers.AddSingleton<Consumes>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<Consumes>.Get().Dep, Is.Not.Null);
         }
@@ -142,7 +142,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Hidden.AddTransient<ConcreteHidden>();
             builder.Resolvers.AddTransient<Consumes>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var a = Application<Consumes>.Get();
             var b = Application<Consumes>.Get();
@@ -158,10 +158,10 @@ namespace Buttr.Core.Tests {
         public void DIBuilder_Singleton_Pair_ResolvesConcreteThroughAbstract() {
             var builder = new DIBuilder();
             builder.AddSingleton<IWidget, Widget>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var a = ((IDIContainer)container).Get<IWidget>();
-            var b = ((IDIContainer)container).Get<IWidget>();
+            var a = container.Get<IWidget>();
+            var b = container.Get<IWidget>();
 
             Assert.That(a, Is.InstanceOf<Widget>());
             Assert.That(a, Is.SameAs(b));
@@ -171,10 +171,10 @@ namespace Buttr.Core.Tests {
         public void DIBuilder_Transient_Pair_YieldsNewConcretePerGet() {
             var builder = new DIBuilder();
             builder.AddTransient<IWidget, Widget>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var a = ((IDIContainer)container).Get<IWidget>();
-            var b = ((IDIContainer)container).Get<IWidget>();
+            var a = container.Get<IWidget>();
+            var b = container.Get<IWidget>();
 
             Assert.That(a, Is.InstanceOf<Widget>());
             Assert.That(a, Is.Not.SameAs(b));

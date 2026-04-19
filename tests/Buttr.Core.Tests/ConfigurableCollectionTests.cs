@@ -28,7 +28,7 @@ namespace Buttr.Core.Tests {
             var returned = collection.WithConfiguration<Service>(s => { s.Value = 42; return s; });
             Assert.That(returned, Is.SameAs(collection));
 
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
             Assert.That(Application<Service>.Get().Value, Is.EqualTo(42));
         }
 
@@ -42,7 +42,7 @@ namespace Buttr.Core.Tests {
             var returned = collection.WithFactory<Service>(() => new Service { Value = 99 });
             Assert.That(returned, Is.SameAs(collection));
 
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
             Assert.That(Application<Service>.Get().Value, Is.EqualTo(99));
         }
 

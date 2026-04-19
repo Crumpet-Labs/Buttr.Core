@@ -179,7 +179,7 @@ namespace Buttr.Core.Tests {
         public void Singleton_WithCtorDep_ResolvesThroughApplicationRegistry() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<Leaf>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var builder = new DIBuilder<int>();
             builder.AddSingleton<Branch>(1);
@@ -205,7 +205,7 @@ namespace Buttr.Core.Tests {
         public void Transient_WithCtorDep_ResolvesThroughApplicationRegistry() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<Leaf>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var builder = new DIBuilder<int>();
             builder.AddTransient<Branch>(1);

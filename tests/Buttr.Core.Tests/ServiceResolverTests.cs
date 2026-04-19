@@ -23,7 +23,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<Leaf>();
             builder.Resolvers.AddSingleton<Branch>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var branch = Application<Branch>.Get();
 
@@ -37,7 +37,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<Middle>();
             builder.Resolvers.AddSingleton<Top>();
 
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var ex = Assert.Throws<ObjectResolverException>(() => _ = Application<Top>.Get());
             Assert.That(ex.Message, Is.Not.Null.And.Not.Empty);
@@ -49,7 +49,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<Middle>();
             builder.Resolvers.AddSingleton<Top>();
 
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var ex = Assert.Throws<ObjectResolverException>(() => _ = Application<Top>.Get());
 

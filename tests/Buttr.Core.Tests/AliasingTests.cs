@@ -14,10 +14,10 @@ namespace Buttr.Core.Tests {
         public void Singleton_AliasedAbstract_GetByAliasReturnsSameInstance() {
             var builder = new DIBuilder();
             builder.Resolvers.AddSingleton<IFoo, Foo>().As<IBar>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var viaPrimary = ((IDIContainer)container).Get<IFoo>();
-            var viaAlias = ((IDIContainer)container).Get<IBar>();
+            var viaPrimary = container.Get<IFoo>();
+            var viaAlias = container.Get<IBar>();
 
             Assert.That(viaPrimary, Is.Not.Null);
             Assert.That(viaAlias, Is.SameAs(viaPrimary));
@@ -27,11 +27,11 @@ namespace Buttr.Core.Tests {
         public void Singleton_ChainedAliases_AllKeysResolveToSameInstance() {
             var builder = new DIBuilder();
             builder.Resolvers.AddSingleton<IFoo, Foo>().As<IBar>().As<IBaz>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var a = ((IDIContainer)container).Get<IFoo>();
-            var b = ((IDIContainer)container).Get<IBar>();
-            var c = ((IDIContainer)container).Get<IBaz>();
+            var a = container.Get<IFoo>();
+            var b = container.Get<IBar>();
+            var c = container.Get<IBaz>();
 
             Assert.That(a, Is.SameAs(b));
             Assert.That(b, Is.SameAs(c));
@@ -41,10 +41,10 @@ namespace Buttr.Core.Tests {
         public void Singleton_AliasOnConcreteRegistration_ResolvesViaAlias() {
             var builder = new DIBuilder();
             builder.Resolvers.AddSingleton<Foo>().As<IFoo>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var concrete = ((IDIContainer)container).Get<Foo>();
-            var viaAlias = ((IDIContainer)container).Get<IFoo>();
+            var concrete = container.Get<Foo>();
+            var viaAlias = container.Get<IFoo>();
 
             Assert.That(viaAlias, Is.SameAs(concrete));
         }
@@ -59,11 +59,11 @@ namespace Buttr.Core.Tests {
         public void Transient_AliasedAbstract_EachGetYieldsFreshInstance() {
             var builder = new DIBuilder();
             builder.Resolvers.AddTransient<IWidget, Widget>().As<INamed>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var a = ((IDIContainer)container).Get<IWidget>();
-            var b = ((IDIContainer)container).Get<IWidget>();
-            var c = ((IDIContainer)container).Get<INamed>();
+            var a = container.Get<IWidget>();
+            var b = container.Get<IWidget>();
+            var c = container.Get<INamed>();
 
             Assert.That(a, Is.Not.SameAs(b));
             Assert.That(a, Is.Not.SameAs(c));
@@ -84,9 +84,9 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<AlphaHandler>();
             builder.Resolvers.AddSingleton<BetaHandler>();
             builder.Resolvers.AddSingleton<UnrelatedService>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var handlers = ((IDIContainer)container).All<IHandler>().ToList();
+            var handlers = container.All<IHandler>().ToList();
 
             Assert.That(handlers, Has.Count.EqualTo(2));
             var tags = handlers.Select(h => h.Tag).OrderBy(t => t).ToList();
@@ -97,9 +97,9 @@ namespace Buttr.Core.Tests {
         public void All_WithAliasedSingleRegistration_YieldsSingleInstanceNotPerAlias() {
             var builder = new DIBuilder();
             builder.Resolvers.AddSingleton<AlphaHandler>().As<IHandler>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var handlers = ((IDIContainer)container).All<IHandler>().ToList();
+            var handlers = container.All<IHandler>().ToList();
 
             Assert.That(handlers, Has.Count.EqualTo(1));
         }
@@ -108,9 +108,9 @@ namespace Buttr.Core.Tests {
         public void All_NoMatchingRegistrations_YieldsEmpty() {
             var builder = new DIBuilder();
             builder.Resolvers.AddSingleton<UnrelatedService>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var handlers = ((IDIContainer)container).All<IHandler>().ToList();
+            var handlers = container.All<IHandler>().ToList();
             Assert.That(handlers, Is.Empty);
         }
     }
@@ -165,19 +165,19 @@ namespace Buttr.Core.Tests {
         public void HiddenAlias_GetByAlias_Throws() {
             var builder = new DIBuilder();
             builder.Hidden.AddSingleton<ISecret, Secret>().As<ISecretAlias>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
             Assert.Throws<ObjectResolverException>(
-                () => _ = ((IDIContainer)container).Get<ISecretAlias>());
+                () => _ = container.Get<ISecretAlias>());
         }
 
         [Test]
         public void HiddenAlias_ExcludedFromAll() {
             var builder = new DIBuilder();
             builder.Hidden.AddSingleton<ISecret, Secret>().As<ISecretAlias>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var all = ((IDIContainer)container).All<ISecret>().ToList();
+            var all = container.All<ISecret>().ToList();
             Assert.That(all, Is.Empty);
         }
 
@@ -186,9 +186,9 @@ namespace Buttr.Core.Tests {
             var builder = new DIBuilder();
             builder.Hidden.AddSingleton<ISecret, Secret>().As<ISecretAlias>();
             builder.AddSingleton<Consumer>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var consumer = ((IDIContainer)container).Get<Consumer>();
+            var consumer = container.Get<Consumer>();
             Assert.That(consumer.Secret, Is.Not.Null);
             Assert.That(consumer.Secret, Is.InstanceOf<Secret>());
         }
@@ -204,10 +204,10 @@ namespace Buttr.Core.Tests {
         public void Scope_AliasedSingleton_SharesInstance() {
             var scope = new ScopeBuilder("aliasing-scope-sharing");
             scope.Resolvers.AddSingleton<IScoped, Scoped>().As<IAlsoScoped>();
-            using var container = (IDisposable)scope.Build();
+            using var container = scope.Build();
 
-            var a = ((IDIContainer)container).Get<IScoped>();
-            var b = ((IDIContainer)container).Get<IAlsoScoped>();
+            var a = container.Get<IScoped>();
+            var b = container.Get<IAlsoScoped>();
 
             Assert.That(a, Is.SameAs(b));
         }
@@ -217,9 +217,9 @@ namespace Buttr.Core.Tests {
             var scope = new ScopeBuilder("aliasing-scope-all");
             scope.Resolvers.AddSingleton<Scoped>();
             scope.Resolvers.AddSingleton<Scoped2>();
-            using var container = (IDisposable)scope.Build();
+            using var container = scope.Build();
 
-            var all = ((IDIContainer)container).All<IScoped>().ToList();
+            var all = container.All<IScoped>().ToList();
             Assert.That(all, Has.Count.EqualTo(2));
         }
     }
@@ -234,7 +234,7 @@ namespace Buttr.Core.Tests {
         public void Application_Alias_ResolvesViaApplicationT() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<IAppService, AppService>().As<IAppFacade>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var viaPrimary = Application<IAppService>.Get();
             var viaAlias = Application<IAppFacade>.Get();
@@ -247,7 +247,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<AppService>();
             builder.Resolvers.AddSingleton<AnotherAppService>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var all = Application.All<IAppService>().ToList();
             Assert.That(all, Has.Count.EqualTo(2));
@@ -257,7 +257,7 @@ namespace Buttr.Core.Tests {
         public void Application_All_ExcludesHidden() {
             var builder = new ApplicationBuilder();
             builder.Hidden.AddSingleton<IAppService, AppService>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var all = Application.All<IAppService>().ToList();
             Assert.That(all, Is.Empty);
@@ -279,10 +279,10 @@ namespace Buttr.Core.Tests {
 
             collection.As<PackageService, IPackageFacade>();
 
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var viaPrimary = ((IDIContainer)container).Get<IPackageService>();
-            var viaAlias = ((IDIContainer)container).Get<IPackageFacade>();
+            var viaPrimary = container.Get<IPackageService>();
+            var viaAlias = container.Get<IPackageFacade>();
 
             Assert.That(viaAlias, Is.SameAs(viaPrimary));
         }

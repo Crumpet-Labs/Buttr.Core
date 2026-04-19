@@ -39,7 +39,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<OnlyPrivateCtor>();
 
             Assert.Throws<InvalidOperationException>(() => {
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
             });
         }
 
@@ -50,7 +50,7 @@ namespace Buttr.Core.Tests {
             // The string-arg ctor is never invoked.
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<MultipleCtors>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var resolved = Application<MultipleCtors>.Get();
             Assert.That(resolved.Picked, Is.EqualTo("noargs"));

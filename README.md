@@ -45,15 +45,17 @@ var builder = new DIBuilder();
 builder.Resolvers.AddSingleton<IAuthService, AuthService>();
 builder.Resolvers.AddTransient<RequestHandler>();
 
-using var container = (IDisposable)builder.Build();
+var container = builder.Build();
 
 // 2. Resolve
-var auth = ((IDIContainer)container).Get<IAuthService>();
+var auth = container.Get<IAuthService>();
 
 // 3. Bulk-resolve every implementation of an interface
 builder.Resolvers.AddSingleton<StartupCommand>().As<ICommand>();
 builder.Resolvers.AddSingleton<ShutdownCommand>().As<ICommand>();
-foreach (var cmd in ((IDIContainer)container).All<ICommand>()) cmd.Run();
+foreach (var cmd in container.All<ICommand>()) cmd.Run();
+
+container.Dispose();
 ```
 
 See [Getting Started](Docs/GettingStarted.md) for a full walk-through, [Containers](Docs/Containers.md) for the `DIContainer` / `ScopeContainer` / `Application` distinction, and [Aliasing](Docs/Aliasing.md) for `.As<>()` and `All<T>()` patterns.

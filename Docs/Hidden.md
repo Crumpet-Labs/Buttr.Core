@@ -64,7 +64,7 @@ container.Get<ISecretAlias>();  // also throws
 container.All<ISecret>();       // excludes this registration
 ```
 
-The analyzer **BUTTR003** catches attempts to resolve a hidden type at compile time. **BUTTR002** catches `[Inject]`-based attempts (engine-bridge scenarios).
+Resolving a hidden type throws `ObjectResolverException` at runtime. A future Core analyzer release is planned to catch the direct-resolve case at compile time (tracked in `BACKLOG.md` as BUTTR002/003 lifted from the Unity source-gen project).
 
 ## Every builder has Hidden
 

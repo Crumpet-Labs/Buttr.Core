@@ -55,7 +55,10 @@ builder.Resolvers.AddSingleton<StartupCommand>();
 builder.Resolvers.AddSingleton<LoggingCommand>();
 builder.Resolvers.AddSingleton<ShutdownCommand>();
 
-foreach (var cmd in ((IDIContainer)container).All<ICommand>()) cmd.Run();
+var container = builder.Build();
+foreach (var cmd in container.All<ICommand>()) cmd.Run();
+
+container.Dispose();
 ```
 
 `All<T>` uses a struct enumerator, so `foreach` iteration is zero-allocation.

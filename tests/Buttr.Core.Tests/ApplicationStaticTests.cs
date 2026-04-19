@@ -18,7 +18,7 @@ namespace Buttr.Core.Tests {
         public void Get_ReturnsResolvedInstance_AfterBuild() {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<GetTarget>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var got = Application<GetTarget>.Get();
             Assert.That(got, Is.Not.Null);
@@ -35,7 +35,7 @@ namespace Buttr.Core.Tests {
             // so post-dispose Get() dereferences a null resolver.
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<DisposeTarget>();
-            var app = (IDisposable)builder.Build();
+            var app = builder.Build();
 
             Assert.That(Application<DisposeTarget>.Get(), Is.Not.Null);
 

@@ -35,9 +35,9 @@ namespace Buttr.Core.Tests {
             builder.AddSingleton<LeafA>();
             builder.AddSingleton<LeafB>();
             builder.AddSingleton<NeedsAB>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var needs = ((IDIContainer)container).Get<NeedsAB>();
+            var needs = container.Get<NeedsAB>();
             Assert.That(needs.A, Is.Not.Null);
             Assert.That(needs.B, Is.Not.Null);
         }
@@ -46,14 +46,14 @@ namespace Buttr.Core.Tests {
         public void MixedSourcing_SomeDepsInContainer_SomeInApplicationRegistry_Resolves() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<LeafB>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var builder = new DIBuilder();
             builder.AddSingleton<LeafA>();
             builder.AddSingleton<NeedsAB>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var needs = ((IDIContainer)container).Get<NeedsAB>();
+            var needs = container.Get<NeedsAB>();
             Assert.That(needs.A, Is.Not.Null);
             Assert.That(needs.B, Is.Not.Null);
         }
@@ -62,15 +62,15 @@ namespace Buttr.Core.Tests {
         public void MixedSourcing_ThreeWayInterleaved_Resolves() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<LeafB>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var builder = new DIBuilder();
             builder.AddSingleton<LeafA>();
             builder.AddSingleton<LeafC>();
             builder.AddSingleton<NeedsABC>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var needs = ((IDIContainer)container).Get<NeedsABC>();
+            var needs = container.Get<NeedsABC>();
             Assert.That(needs.A, Is.InstanceOf<LeafA>());
             Assert.That(needs.B, Is.InstanceOf<LeafB>());
             Assert.That(needs.C, Is.InstanceOf<LeafC>());
@@ -80,24 +80,24 @@ namespace Buttr.Core.Tests {
         public void AllDepsMissing_Throws_ObjectResolverException() {
             var builder = new DIBuilder();
             builder.AddSingleton<NeedsAB>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
             Assert.Throws<ObjectResolverException>(
-                () => _ = ((IDIContainer)container).Get<NeedsAB>());
+                () => _ = container.Get<NeedsAB>());
         }
 
         [Test]
         public void MixedSourcing_WithAbstractKey_ResolvesCorrectly() {
             var app = new ApplicationBuilder();
             app.Resolvers.AddSingleton<LeafB>();
-            using var appContainer = (IDisposable)app.Build();
+            using var appContainer = app.Build();
 
             var builder = new DIBuilder();
             builder.AddSingleton<ILeaf, InterfaceLeaf>();
             builder.AddSingleton<NeedsInterface>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var needs = ((IDIContainer)container).Get<NeedsInterface>();
+            var needs = container.Get<NeedsInterface>();
             Assert.That(needs.I, Is.InstanceOf<InterfaceLeaf>());
             Assert.That(needs.B, Is.InstanceOf<LeafB>());
         }
@@ -108,9 +108,9 @@ namespace Buttr.Core.Tests {
             builder.AddSingleton<ILeaf, InterfaceLeaf>();
             builder.AddSingleton<LeafB>();
             builder.AddSingleton<NeedsInterface>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var needs = ((IDIContainer)container).Get<NeedsInterface>();
+            var needs = container.Get<NeedsInterface>();
             Assert.That(needs.I, Is.InstanceOf<InterfaceLeaf>());
             Assert.That(needs.B, Is.InstanceOf<LeafB>());
         }

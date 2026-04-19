@@ -22,18 +22,18 @@ namespace Buttr.Core.Tests {
         public void Hidden_AddSingleton_BlocksGet() {
             var builder = new DIBuilder();
             builder.Hidden.AddSingleton<Secret>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            Assert.Throws<ObjectResolverException>(() => _ = ((IDIContainer)container).Get<Secret>());
+            Assert.Throws<ObjectResolverException>(() => _ = container.Get<Secret>());
         }
 
         [Test]
         public void Hidden_AddSingleton_BlocksTryGet() {
             var builder = new DIBuilder();
             builder.Hidden.AddSingleton<Secret>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            Assert.Throws<ObjectResolverException>(() => ((IDIContainer)container).TryGet<Secret>(out _));
+            Assert.Throws<ObjectResolverException>(() => container.TryGet<Secret>(out _));
         }
 
         [Test]
@@ -41,9 +41,9 @@ namespace Buttr.Core.Tests {
             var builder = new DIBuilder();
             builder.Hidden.AddSingleton<ISecret, Secret>();
             builder.AddSingleton<Visible>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            var visible = ((IDIContainer)container).Get<Visible>();
+            var visible = container.Get<Visible>();
             Assert.That(visible, Is.Not.Null);
             Assert.That(visible.Secret, Is.Not.Null);
             Assert.That(visible.Secret, Is.InstanceOf<Secret>());
@@ -56,12 +56,12 @@ namespace Buttr.Core.Tests {
             // but Get<TConcrete> does not — the concrete type isn't marked hidden.
             var builder = new DIBuilder();
             builder.Hidden.AddSingleton<ISecret, Secret>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            Assert.Throws<ObjectResolverException>(() => _ = ((IDIContainer)container).Get<ISecret>());
+            Assert.Throws<ObjectResolverException>(() => _ = container.Get<ISecret>());
             // Concrete isn't hidden, and isn't registered under its own key either,
             // so it returns default — documenting the asymmetry.
-            Assert.That(((IDIContainer)container).Get<Secret>(), Is.Null);
+            Assert.That(container.Get<Secret>(), Is.Null);
         }
 
         [Test]
@@ -69,11 +69,11 @@ namespace Buttr.Core.Tests {
             var builder = new DIBuilder();
             builder.Hidden.AddTransient<ISecret, Secret>();
             builder.AddSingleton<Visible>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            Assert.Throws<ObjectResolverException>(() => _ = ((IDIContainer)container).Get<ISecret>());
+            Assert.Throws<ObjectResolverException>(() => _ = container.Get<ISecret>());
 
-            var visible = ((IDIContainer)container).Get<Visible>();
+            var visible = container.Get<Visible>();
             Assert.That(visible.Secret, Is.Not.Null);
         }
 
@@ -83,12 +83,12 @@ namespace Buttr.Core.Tests {
             builder.Hidden.AddSingleton<Secret>();
             builder.Hidden.AddSingleton<OtherSecret>();
             builder.AddSingleton<MultiVisible>();
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            Assert.Throws<ObjectResolverException>(() => _ = ((IDIContainer)container).Get<Secret>());
-            Assert.Throws<ObjectResolverException>(() => _ = ((IDIContainer)container).Get<OtherSecret>());
+            Assert.Throws<ObjectResolverException>(() => _ = container.Get<Secret>());
+            Assert.Throws<ObjectResolverException>(() => _ = container.Get<OtherSecret>());
 
-            var multi = ((IDIContainer)container).Get<MultiVisible>();
+            var multi = container.Get<MultiVisible>();
             Assert.That(multi.ConcreteA, Is.Not.Null);
             Assert.That(multi.ConcreteB, Is.Not.Null);
         }
@@ -139,7 +139,7 @@ namespace Buttr.Core.Tests {
             // StaticTransientResolver — NOT by the Hidden variants.
             var builder = new ApplicationBuilder();
             builder.Hidden.AddSingleton<HiddenOnly>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             // s_Resolver is still null for this T — Get() would NRE.
             // We don't assert the exception shape, just that no one set it.
@@ -152,7 +152,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Hidden.AddSingleton<IHiddenDep, HiddenDep>();
             builder.Resolvers.AddSingleton<VisibleConsumer>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var consumer = Application<VisibleConsumer>.Get();
             Assert.That(consumer, Is.Not.Null);
@@ -167,7 +167,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Hidden.AddTransient<IHiddenDep, HiddenDep>();
             builder.Resolvers.AddTransient<VisibleConsumer>();
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             var a = Application<VisibleConsumer>.Get();
             var b = Application<VisibleConsumer>.Get();

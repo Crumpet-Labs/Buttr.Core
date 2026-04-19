@@ -27,7 +27,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<PrivateCtorOnly>()
                 .WithFactory(() => PrivateCtorOnly.Create(77));
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<PrivateCtorOnly>.Get().Value, Is.EqualTo(77));
         }
@@ -38,7 +38,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddTransient<PrivateCtorOnly>()
                 .WithFactory(() => PrivateCtorOnly.Create(++seed));
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<PrivateCtorOnly>.Get().Value, Is.EqualTo(1));
             Assert.That(Application<PrivateCtorOnly>.Get().Value, Is.EqualTo(2));
@@ -49,7 +49,7 @@ namespace Buttr.Core.Tests {
             var builder = new ApplicationBuilder();
             builder.Resolvers.AddSingleton<IGate, Gate>()
                 .WithFactory(() => Gate.Make(42));
-            using var app = (IDisposable)builder.Build();
+            using var app = builder.Build();
 
             Assert.That(Application<IGate>.Get().V, Is.EqualTo(42));
         }
@@ -59,9 +59,9 @@ namespace Buttr.Core.Tests {
             var builder = new DIBuilder();
             builder.AddSingleton<PrivateCtorOnly>()
                 .WithFactory(() => PrivateCtorOnly.Create(5));
-            using var container = (IDisposable)builder.Build();
+            using var container = builder.Build();
 
-            Assert.That(((IDIContainer)container).Get<PrivateCtorOnly>().Value, Is.EqualTo(5));
+            Assert.That(container.Get<PrivateCtorOnly>().Value, Is.EqualTo(5));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<PrivateCtorOnly>();
 
             Assert.Throws<InvalidOperationException>(() => {
-                using var app = (IDisposable)builder.Build();
+                using var app = builder.Build();
             });
         }
     }
