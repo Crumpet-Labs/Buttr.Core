@@ -1,0 +1,20 @@
+## .NET build output
+bin/
+obj/
+artifacts/
+*.user
+*.suo
+*.userprefs
+
+## IDE
+.vs/
+.idea/
+.vscode/
+*.swp
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Local publish outputs allowed into artifacts/ via explicit copy — keep folder
+!artifacts/.gitkeep

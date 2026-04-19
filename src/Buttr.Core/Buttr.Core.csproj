@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Buttr.Core</AssemblyName>
+    <RootNamespace>Buttr.Core</RootNamespace>
+  </PropertyGroup>
+</Project>

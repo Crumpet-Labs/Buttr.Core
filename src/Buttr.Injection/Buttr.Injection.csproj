@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Buttr.Injection</AssemblyName>
+    <RootNamespace>Buttr.Injection</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buttr.Core\Buttr.Core.csproj" />
+  </ItemGroup>
+</Project>
