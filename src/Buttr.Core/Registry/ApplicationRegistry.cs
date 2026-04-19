@@ -43,14 +43,6 @@ namespace Buttr.Core {
             foreach (var alias in aliases) s_Registry.Remove(alias);
         }
 
-        internal static IEnumerable<T> All<T>() {
-            var target = typeof(T);
-            for (var i = 0; i < s_Registrations.Count; i++) {
-                var registration = s_Registrations[i];
-                if (registration.IsHidden) continue;
-                if (target.IsAssignableFrom(registration.ConcreteType) == false) continue;
-                yield return (T)registration.Resolver.Resolve();
-            }
-        }
+        internal static RegistrationEnumerable<T> All<T>() => new(s_Registrations);
     }
 }

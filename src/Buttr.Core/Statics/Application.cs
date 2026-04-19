@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Buttr.Core {
     public static class Application<T> {
         private static IObjectResolver s_Resolver;
@@ -8,6 +6,6 @@ namespace Buttr.Core {
     }
 
     public static class Application {
-        public static IEnumerable<T> All<T>() => ApplicationRegistry.All<T>();
+        public static RegistrationEnumerable<T> All<T>() => ApplicationRegistry.All<T>();
     }
 }

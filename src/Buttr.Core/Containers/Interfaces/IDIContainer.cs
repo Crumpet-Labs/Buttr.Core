@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Buttr.Core {
     public interface IDIContainer<in TID> : IDisposable {
@@ -12,6 +11,6 @@ namespace Buttr.Core {
     public interface IDIContainer : IDisposable {
         T Get<T>();
         bool TryGet<T>(out T value);
-        IEnumerable<T> All<T>();
+        RegistrationEnumerable<T> All<T>();
     }
 }
