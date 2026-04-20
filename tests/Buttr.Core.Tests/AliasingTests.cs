@@ -249,7 +249,7 @@ namespace Buttr.Core.Tests {
             builder.Resolvers.AddSingleton<AnotherAppService>();
             using var app = builder.Build();
 
-            var all = Application.All<IAppService>().ToList();
+            var all = Application<IAppService>.All().ToList();
             Assert.That(all, Has.Count.EqualTo(2));
         }
 
@@ -259,7 +259,7 @@ namespace Buttr.Core.Tests {
             builder.Hidden.AddSingleton<IAppService, AppService>();
             using var app = builder.Build();
 
-            var all = Application.All<IAppService>().ToList();
+            var all = Application<IAppService>.All().ToList();
             Assert.That(all, Is.Empty);
         }
     }

@@ -73,12 +73,12 @@ Use this when:
 
 **Caveat:** like any static, `Application<T>` makes testing harder. Prefer `DIContainer`/`ScopeContainer` for services you might want to swap in tests.
 
-### `Application.All<T>()`
+### `Application<T>.All()`
 
 For bulk access over the global container:
 
 ```csharp
-foreach (var handler in Application.All<IStartupHandler>()) handler.Run();
+foreach (var handler in Application<IStartupHandler>.All()) handler.Run();
 ```
 
 Mirrors `IDIContainer.All<T>()` for the static surface. Zero-alloc `foreach`.

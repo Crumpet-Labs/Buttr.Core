@@ -65,10 +65,10 @@ container.Dispose();
 
 ### On the Application surface
 
-`Application.All<T>()` does the same for the global container:
+`Application<T>.All()` does the same for the global container:
 
 ```csharp
-foreach (var plugin in Application.All<IPlugin>()) plugin.Activate();
+foreach (var plugin in Application<IPlugin>.All()) plugin.Activate();
 ```
 
 ## Patterns

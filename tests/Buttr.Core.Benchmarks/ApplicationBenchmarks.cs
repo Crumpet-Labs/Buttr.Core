@@ -42,7 +42,7 @@ public class ApplicationBenchmarks {
     [Benchmark]
     public int All_FiveMatchingRegistrations() {
         var count = 0;
-        foreach (var _ in Application.All<IPlugin>()) count++;
+        foreach (var _ in Application<IPlugin>.All()) count++;
         return count;
     }
 }

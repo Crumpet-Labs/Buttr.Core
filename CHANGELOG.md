@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.3.2 — `Application.All<T>()` renamed to `Application<T>.All()`
+
+Fixes a naming inconsistency shipped in 1.1.0. The bulk-resolution surface on
+the global container now lives on the same generic type as its single-instance
+counterpart, so both sit side-by-side:
+
+```csharp
+var one = Application<IFoo>.Get();
+var many = Application<IFoo>.All();
+```
+
+Previously `All` lived on a non-generic companion class (`Application.All<T>()`),
+which broke the visual parallel with `Application<T>.Get()` and collided with
+`UnityEngine.Application` at every call site that also had `using UnityEngine;`.
+
+### Breaking change
+
+- `Application.All<T>()` → `Application<T>.All()`.
+- The non-generic `Application` static class is removed. Nothing else lived on
+  it; behaviour is otherwise identical.
+
+Mechanical migration: replace `Application.All<TFoo>()` with
+`Application<TFoo>.All()` at each call site.
+
 ## 1.3.0 — Performance audit + `All<T>` zero-alloc
 
 Full BenchmarkDotNet pass over the resolve hot paths (baseline + post-fix
