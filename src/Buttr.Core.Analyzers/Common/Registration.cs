@@ -12,6 +12,7 @@ namespace Buttr.Core.Analyzers {
         public Lifetime Lifetime { get; set; }
         public Visibility Visibility { get; set; }
         public Location? CallSite { get; set; }
+        public ISymbol? BuilderSymbol { get; set; }
         public List<AliasKey> Aliases { get; } = new();
     }
 

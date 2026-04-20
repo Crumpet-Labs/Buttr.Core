@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -13,7 +14,7 @@ namespace Buttr.Core.Analyzers {
                 "Type '{0}' is registered multiple times in the {1} container. " +
                 "The second registration will overwrite the first, which is likely unintentional.",
             category: "Buttr.Injection",
-            defaultSeverity: DiagnosticSeverity.Error,
+            defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             customTags: WellKnownDiagnosticTags.CompilationEnd);
 
@@ -45,18 +46,37 @@ namespace Buttr.Core.Analyzers {
             List<Registration> registrations,
             string containerName
         ) {
+            var bySymbol = registrations
+                .Where(r => r.BuilderSymbol is not null)
+                .GroupBy(r => r.BuilderSymbol!, SymbolEqualityComparer.Default);
+
+            foreach (var group in bySymbol)
+                ReportDuplicatesInGroup(context, group, containerName);
+
+            var byTree = registrations
+                .Where(r => r.BuilderSymbol is null && r.CallSite?.SourceTree is not null)
+                .GroupBy(r => r.CallSite!.SourceTree!);
+
+            foreach (var group in byTree)
+                ReportDuplicatesInGroup(context, group, containerName);
+        }
+
+        private static void ReportDuplicatesInGroup(
+            CompilationAnalysisContext context,
+            IEnumerable<Registration> group,
+            string containerName
+        ) {
+            var ordered = group
+                .Where(r => r.CallSite is not null)
+                .OrderBy(r => r.CallSite!.SourceTree?.FilePath ?? string.Empty)
+                .ThenBy(r => r.CallSite!.SourceSpan.Start);
+
             var seen = new HashSet<string>();
-
-            foreach (var reg in registrations) {
+            foreach (var reg in ordered) {
                 if (reg.KeyTypeFullName is null) continue;
-
-                if (seen.Contains(reg.KeyTypeFullName)) {
-                    if (reg.CallSite is null) continue;
+                if (!seen.Add(reg.KeyTypeFullName)) {
                     context.ReportDiagnostic(Diagnostic.Create(
                         Rule, reg.CallSite, reg.KeyType, containerName));
-                }
-                else {
-                    seen.Add(reg.KeyTypeFullName);
                 }
             }
         }

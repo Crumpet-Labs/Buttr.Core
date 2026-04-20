@@ -67,7 +67,8 @@ namespace Buttr.Core.Analyzers {
                 ScopeKey = containerContext.Value.ScopeKey,
                 Lifetime = lifetime,
                 Visibility = containerContext.Value.Visibility,
-                CallSite = operation.Syntax.GetLocation()
+                CallSite = operation.Syntax.GetLocation(),
+                BuilderSymbol = TryGetBuilderSymbol(operation)
             };
 
             lock (Model) {
@@ -181,6 +182,17 @@ namespace Buttr.Core.Analyzers {
             }
 
             return null;
+        }
+
+        private static ISymbol? TryGetBuilderSymbol(IInvocationOperation operation) {
+            IOperation? current = operation.Instance;
+            if (current is IPropertyReferenceOperation prop) current = prop.Instance;
+            return current switch {
+                ILocalReferenceOperation l => l.Local,
+                IFieldReferenceOperation f => f.Field,
+                IParameterReferenceOperation p => p.Parameter,
+                _ => null
+            };
         }
 
         private static string? TryExtractScopeKey(IOperation? builderOperation) {
