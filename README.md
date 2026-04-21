@@ -72,13 +72,44 @@ Transient allocation equals the new instance — `TryResolve` adds no visible ov
 
 Reproducing and full reports in [Docs/Benchmarks/](Docs/Benchmarks/).
 
-## Unity / Godot / Stride consumers
+## Install
 
-Engine-specific bridges live in their own repos and vendor the Buttr.Core DLLs. The Unity bridge is the first and most mature:
+### .NET (NuGet — preferred for non-Unity projects)
 
-- **[Buttr Unity package](https://github.com/Crumpet-Labs/Buttr)** (`com.crumpetlabs.buttr.unity`) — MonoBehaviour wiring, scene walker, `[Inject]` source generator.
+```
+dotnet add package Buttr.Core
+```
 
-If you're writing a new engine bridge, the pattern is: vendor the Core DLLs, add an engine-specific source generator that wires `[Inject]`-decorated fields at the engine's appropriate lifecycle hook.
+Brings in the `Buttr.Core` assembly plus `Buttr.Core.Analyzers` shipped at `analyzers/dotnet/cs/`. Add `Buttr.Injection` separately if you need the `[Inject]` marker + `InjectionProcessor` registry (source generators on the consumer side consume this):
+
+```
+dotnet add package Buttr.Injection
+```
+
+### Unity (UPM via git URL)
+
+UPM doesn't speak NuGet, so this repo also ships a small UPM package at [`package/`](package/) that vendors the same Core DLLs. Add to your project's `Packages/manifest.json`:
+
+```json
+"com.crumpetlabs.buttr": "https://github.com/Crumpet-Labs/Buttr.Core.git?path=package"
+```
+
+Pin a specific version with `#<tag>`, e.g. `#1.3.2`. The package places `Buttr.Core.dll` and `Buttr.Injection.dll` under `Runtime/Lib/` with minimal meta files — Unity handles the rest.
+
+For the Unity-specific glue (MonoBehaviour/ScriptableObject wiring, scene walker, `[Inject]` source generator), install the companion Buttr.Unity package alongside:
+
+```json
+"com.crumpetlabs.buttr.unity": "https://github.com/Crumpet-Labs/Buttr.Unity.git?path=Assets/Plugins/Buttr"
+```
+
+Buttr.Unity also vendors the Core DLLs, so **use either the Core UPM package or Buttr.Unity — not both**, or Unity will complain about duplicate assembly imports.
+
+## Other engines (Godot / Stride / …)
+
+Engine-specific bridges live in their own repos and vendor the Core DLLs. Pattern: vendor the DLLs, add an engine-specific source generator (or runtime injector) that wires `[Inject]`-decorated fields at the engine's appropriate lifecycle hook.
+
+Currently shipping:
+- **[Buttr.Unity](https://github.com/Crumpet-Labs/Buttr.Unity)** (`com.crumpetlabs.buttr.unity`) — MonoBehaviour / ScriptableObject wiring, scene walker, `[Inject]` source generator.
 
 ## Build & test
 
