@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.3 — UPM distribution
+
+Tooling-only release. No API or runtime changes vs 1.3.2 — `Buttr.Core.dll` and `Buttr.Injection.dll` are binary-compatible.
+
+The repo now ships a Unity Package Manager layout at [`package/`](package/) in addition to the existing NuGet artefacts. Unity consumers can depend on the engine-agnostic Core via git URL:
+
+```json
+"com.crumpetlabs.buttr": "https://github.com/Crumpet-Labs/Buttr.Core.git?path=package#1.3.3"
+```
+
+Companion change: Buttr.Unity 2.4.0 stops vendoring its own copy of the Core DLLs and depends on `com.crumpetlabs.buttr` transitively, so consumer Unity projects only ever see one copy of `Buttr.Core.dll`.
+
 ## 1.3.2 — `Application.All<T>()` renamed to `Application<T>.All()`
 
 Fixes a naming inconsistency shipped in 1.1.0. The bulk-resolution surface on

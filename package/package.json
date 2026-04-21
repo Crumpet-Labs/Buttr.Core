@@ -1,6 +1,6 @@
 {
   "name": "com.crumpetlabs.buttr",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "displayName": "Buttr.Core",
   "description": "Engine-agnostic dependency-injection container for .NET. Pure C#, zero runtime dependencies. This UPM package vendors the compiled Buttr.Core and Buttr.Injection assemblies for Unity consumption — prefer the Buttr.Core NuGet package for non-Unity .NET projects.",
   "unity": "2021.3",
