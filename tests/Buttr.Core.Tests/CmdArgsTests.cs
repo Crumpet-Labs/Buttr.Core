@@ -5,7 +5,6 @@ namespace Buttr.Core.Tests {
     public class CmdArgsTests {
         [Test]
         public void Read_BeforeInitialize_ReturnsEmptyDictionary_DoesNotThrow() {
-            // Reset to known-empty state by initialising with no args.
             CMDArgs.Initialize(System.Array.Empty<string>());
 
             var dict = CMDArgs.Read();

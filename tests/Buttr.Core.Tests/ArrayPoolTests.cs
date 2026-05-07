@@ -2,8 +2,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // Buttr.Core.ArrayPool<T> keeps exact-size semantics on Release (contents cleared)
-    // and resizes on Get if the pooled array length doesn't match the request.
     public class ArrayPoolTests {
         [Test]
         public void Get_ReturnsArrayOfRequestedSize() {
@@ -20,7 +18,6 @@ namespace Buttr.Core.Tests {
             arr[2] = "gamma";
             ArrayPool<string>.Release(arr);
 
-            // Re-rent same size. Custom pool reuses and guarantees cleared contents.
             var reused = ArrayPool<string>.Get(3);
             Assert.That(reused.Length, Is.EqualTo(3));
             foreach (var s in reused) Assert.That(s, Is.Null);

@@ -3,7 +3,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // ── DIBuilder<TID> — ID-keyed container builder ──────────────────
     public class DIBuilderIDTests {
         public interface INotAllowed { }
         public sealed class Alpha { }
@@ -99,7 +98,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── DIContainer<TID> ─────────────────────────────────────────────
     public class DIContainerIDTests {
         public sealed class Thing { }
         public sealed class DisposableThing : IDisposable {
@@ -164,7 +162,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── ID-keyed resolver + ApplicationRegistry fallback ─────────────
     public class DIBuilderIDDependencyResolutionTests {
         public sealed class Leaf { }
         public sealed class Branch {

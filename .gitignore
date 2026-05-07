@@ -12,6 +12,12 @@ artifacts/
 .vscode/
 *.swp
 
+## AI tooling
+.claude/
+Docs/Retrospectives/
+Docs/superpowers/
+Docs/plans/
+
 ## OS
 .DS_Store
 Thumbs.db

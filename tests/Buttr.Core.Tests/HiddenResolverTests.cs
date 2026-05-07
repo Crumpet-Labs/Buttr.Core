@@ -3,7 +3,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // ── Container-level hidden (DIBuilder) ───────────────────────────
     public class DIBuilderHiddenTests {
         public interface ISecret { }
         public sealed class Secret : ISecret { }
@@ -94,7 +93,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── Container-level hidden (ScopeBuilder) ────────────────────────
     public class ScopeBuilderHiddenTests {
         public interface IHiddenService { }
         public sealed class HiddenService : IHiddenService { }
@@ -120,7 +118,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── Application-level hidden (ApplicationBuilder.Hidden) ─────────
     public class ApplicationHiddenTests {
         public interface IHiddenDep { }
         public sealed class HiddenDep : IHiddenDep { }

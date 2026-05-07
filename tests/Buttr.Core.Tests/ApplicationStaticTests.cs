@@ -3,14 +3,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // Application<T> is a per-type static accessor. Its Set is internal — only
-    // called from StaticSingletonResolver / StaticTransientResolver during
-    // ApplicationBuilder.Build(). So its lifecycle is observed through the
-    // public builder surface.
-    //
-    // Each test uses a fixture-scoped type to isolate Application<T>.s_Resolver
-    // from tests in other fixtures (each typeof(T) has its own static slot).
-
     public class ApplicationStaticGetAfterBuildTests {
         public sealed class GetTarget { public int Stamp = 123; }
 

@@ -3,11 +3,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // Covers the `<TAbstract, TConcrete>` pair variants of every resolver family.
-    // Earlier test files predominantly use the single-generic forms; these
-    // variants are a near-duplicate codebase and drift-prone. Explicit coverage
-    // ensures both forms stay in sync.
-
     public class ApplicationPairResolverTests {
         public interface IThing { int Value { get; set; } }
         public sealed class Thing : IThing { public int Value { get; set; } }
@@ -120,7 +115,6 @@ namespace Buttr.Core.Tests {
             Assert.That(a.H, Is.Not.SameAs(b.H));
         }
 
-        // ── Single-generic hidden resolvers ──────────────────────────
         public sealed class ConcreteHidden { }
         public sealed class Consumes {
             public ConcreteHidden Dep;

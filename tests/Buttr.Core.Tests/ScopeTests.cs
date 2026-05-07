@@ -3,7 +3,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // ── ScopeBuilder ─────────────────────────────────────────────────
     public class ScopeBuilderTests {
         public interface IService { }
         public sealed class Service : IService { }
@@ -81,7 +80,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── ScopeContainer ───────────────────────────────────────────────
     public class ScopeContainerTests {
         public interface IService { }
         public sealed class Service : IService { }
@@ -170,7 +168,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── ScopeRegistry ────────────────────────────────────────────────
     public class ScopeRegistryTests {
         public sealed class Service { }
 

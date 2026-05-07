@@ -3,7 +3,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // ── ApplicationBuilder resolvers: IConfigurable ──────────────────
     public class ApplicationBuilderConfigurableTests {
         public sealed class Item {
             public int Value;
@@ -67,7 +66,6 @@ namespace Buttr.Core.Tests {
                 .WithConfiguration(x => { x.Value *= 3; return x; });
             using var app = builder.Build();
 
-            // Factory produces 10 → configuration multiplies by 3 → 30
             Assert.That(Application<Item>.Get().Value, Is.EqualTo(30));
         }
 
@@ -112,7 +110,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── DIBuilder resolvers: IConfigurable ───────────────────────────
     public class DIBuilderConfigurableTests {
         public sealed class Widget {
             public string Label;
@@ -146,7 +143,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── ScopeBuilder resolvers: IConfigurable ────────────────────────
     public class ScopeBuilderConfigurableTests {
         public sealed class Gadget {
             public double Setting;
@@ -176,7 +172,6 @@ namespace Buttr.Core.Tests {
         }
     }
 
-    // ── DIBuilder<TID> resolvers: IConfigurable ──────────────────────
     public class DIBuilderIDConfigurableTests {
         public sealed class Doodad {
             public int Id;

@@ -3,13 +3,6 @@ using Buttr.Core;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // Closes coverage gaps on the `<TAbstract, TConcrete>` pair variants and
-    // single-generic resolvers that weren't exercised through Dispose /
-    // WithConfiguration / WithFactory in the first pass.
-    //
-    // Every resolver type in the codebase implements IConfigurable and Dispose;
-    // both must be hit at least once per variant.
-
     public class ResolverLifecycleTests {
         public interface IThing { int V { get; set; } }
         public sealed class Thing : IThing { public int V { get; set; } }
@@ -19,7 +12,6 @@ namespace Buttr.Core.Tests {
             public void Dispose() => Disposed = true;
         }
 
-        // ── SingletonObjectResolver<TAbstract, TConcrete> ────────────
         public class ContainerSingletonPair {
             [Test]
             public void Pair_WithFactory_Overrides() {
@@ -51,7 +43,6 @@ namespace Buttr.Core.Tests {
             }
         }
 
-        // ── TransientObjectResolver<TAbstract, TConcrete> ────────────
         public class ContainerTransientPair {
             [Test]
             public void Pair_WithFactory_Overrides() {
@@ -76,7 +67,6 @@ namespace Buttr.Core.Tests {
             }
         }
 
-        // ── TransientObjectResolver<TConcrete> ───────────────────────
         public class ContainerTransientSingle {
             public sealed class Single { public int V; }
 
@@ -103,7 +93,6 @@ namespace Buttr.Core.Tests {
             }
         }
 
-        // ── SingletonObjectResolver<TConcrete> Dispose IDisposable ───
         public class ContainerSingletonSingleDispose {
             public sealed class D : IDisposable {
                 public bool Disposed;
@@ -122,9 +111,6 @@ namespace Buttr.Core.Tests {
             }
         }
 
-        // ── IDSingletonObjectResolver / IDTransientObjectResolver pair
-        //    forms (the generic itself takes <TID, TConcrete>; these
-        //    tests verify WithConfiguration + WithFactory on both) ────
         public class IDResolverConfigurablePaths {
             public sealed class Thing { public int V; }
 
@@ -171,7 +157,6 @@ namespace Buttr.Core.Tests {
             }
         }
 
-        // ── HiddenStaticSingletonResolver<T> + <T,T> Configurable ────
         public class HiddenSingletonConfigurablePaths {
             public interface IDep { int V { get; set; } }
             public sealed class Dep : IDep { public int V { get; set; } }
@@ -231,7 +216,6 @@ namespace Buttr.Core.Tests {
             }
         }
 
-        // ── HiddenStaticTransientResolver<T> + <T,T> Configurable ────
         public class HiddenTransientConfigurablePaths {
             public interface IDep { int V { get; set; } }
             public sealed class Dep : IDep { public int V { get; set; } }
@@ -295,7 +279,6 @@ namespace Buttr.Core.Tests {
             }
         }
 
-        // ── StaticTransientResolver<T, T> pair — WithConfiguration / WithFactory
         public class StaticTransientPairConfigurable {
             public interface IT { int V { get; set; } }
             public sealed class T : IT { public int V { get; set; } }

@@ -5,10 +5,6 @@ using Buttr.Injection;
 using NUnit.Framework;
 
 namespace Buttr.Core.Tests {
-    // Per-test target types — each test class gets distinct types so the static
-    // Dictionary keyed by typeof(T) never collides across fixtures.
-    // TearDown still clears the dict to keep each test hermetic.
-
     public class InjectionProcessorRegisterTests {
         public sealed class Target : IInjectable {
             public bool Injected { get; set; }
@@ -102,7 +98,7 @@ namespace Buttr.Core.Tests {
 
             InjectionProcessor.Register<Target>(t => t.Count += 1);
 
-            var target = new Target { Injected = true }; // user sets flag manually
+            var target = new Target { Injected = true };
             InjectionProcessor.Inject(target);
 
             Assert.That(target.Count, Is.EqualTo(0),
